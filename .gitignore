@@ -12,3 +12,22 @@ gradle-app.setting
 
 # # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
 # gradle/wrapper/gradle-wrapper.properties
+
+# ignore Minecraft and Forge files
+.classpath
+.project
+.settings/
+banned-ips.json
+banned-players.json
+bin/
+config/
+eula.txt
+logs/
+ops.json
+options.txt
+saves/
+server.properties
+usercache.json
+usernamecache.json
+whitelist.json
+world/
