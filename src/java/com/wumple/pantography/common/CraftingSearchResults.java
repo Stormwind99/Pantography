@@ -2,9 +2,19 @@ package com.wumple.pantography.common;
 
 import net.minecraft.item.ItemStack;
 
-// crafting items for this recipe, if present
+/**
+ *  Crafting items for this recipe, if present
+ */
 class CraftingSearchResults {
+	/**
+	 * Crafting destination item stack - the stack to be modified
+	 * null if none found
+	 */
 	private final ItemStack m_destItemStack;
+	/**
+	 * Crafting source item stack - the stack to be copied from
+	 * null if none found
+	 */
 	private final ItemStack m_srcItemStack;
 
 	public CraftingSearchResults() {

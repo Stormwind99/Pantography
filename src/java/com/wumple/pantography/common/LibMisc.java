@@ -1,5 +1,9 @@
 package com.wumple.pantography.common;
 
+/**
+ * Mod constants for versioning, etc - many from Gradle
+ * @see Pantography
+ */
 public final class LibMisc {
 
 	// Mod Constants

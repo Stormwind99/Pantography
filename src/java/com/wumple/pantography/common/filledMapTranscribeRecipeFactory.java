@@ -12,6 +12,7 @@ import com.google.common.collect.Multisets;
 import com.google.gson.JsonObject;
 
 import net.minecraft.init.Items;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemMap;
 import net.minecraft.item.ItemStack;
@@ -23,10 +24,20 @@ import net.minecraft.world.storage.MapData;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.crafting.IRecipeFactory;
 import net.minecraftforge.common.crafting.JsonContext;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
-// recipe to copy map data from one filled map into another filled map
+/**
+ * RecipeFactory to copy map data from one filled map into another filled map
+ */
 public class filledMapTranscribeRecipeFactory implements IRecipeFactory {
+	
+	/**
+	 * hook for JSON to be able to use this recipe
+	 * @see _factories.json
+	 * @see filled_map_transcribe.json
+	 */
     @Override
     public IRecipe parse(JsonContext context, JsonObject json) {
         ShapelessOreRecipe recipe = ShapelessOreRecipe.factory(context, json);
@@ -34,64 +45,54 @@ public class filledMapTranscribeRecipeFactory implements IRecipeFactory {
         return new filledMapTranscribeRecipe(new ResourceLocation(LibMisc.MOD_ID, "filled_map_transcribe_crafting"), recipe.getRecipeOutput());
     }
 
+    /**
+     * The actual recipe to copy map data from one filled map into another filled map
+     */
     public static class filledMapTranscribeRecipe extends ShapelessOreRecipe {
     	
     	public filledMapTranscribeRecipe(ResourceLocation group, @Nonnull ItemStack result, Object... recipe) {
     		super(group, result, recipe);
-    		MinecraftForge.EVENT_BUS.register(recipe);
+    		// register for events so received onCrafting event can handle map transcription
+    		MinecraftForge.EVENT_BUS.register(this);
     	}
+    	
+    	/**
+    	 * Magic number for width and height of map data - not a constant elsewhere
+    	 * @see MapData
+    	 */
+    	private static final int pixLength = 128;
 
+    	// Basic logging for debugging
 		public static final Logger logger = LogManager.getLogger(LibMisc.MOD_ID);
-		private static final int pixLength = 128;
-		// private EntityPlayer player;
-		// private World world;
+		/**
+		 * // Enable for primitive live debugging
+		 * private EntityPlayer player;
+		 * private World world;
+		 */
+		
 	
-		/*
-		public static void init() {
-			final filledMapTranscribeRecipe recipe = new filledMapTranscribeRecipe();
-			ForgeRegistries.RECIPES.register(recipe);
-			
-		}
-		*/
-	
-		// debug logging
+		/**
+		 * debug logging
+		 * @param msg message to log
+		 */
 		private void log(final String msg) {
 			logger.debug(msg);
 	
-			/*
+			/**
+			 * // Enable for primitive debugging
 			 * if (player != null) { player.addChatMessage(new
 			 * ChatComponentText(msg)); }
 			 */
 		}
 	
-		// return the items involved in this recipe, or null if not present
-		private CraftingSearchResults getStuff(final InventoryCrafting inv) {
-			ItemStack destItemStack = null;
-			ItemStack srcItemStack = null;
-	
-			for (int j = 0; j < inv.getSizeInventory(); ++j) {
-				final ItemStack itemstack1 = inv.getStackInSlot(j);
-	
-				if (itemstack1 != null) {
-					if (itemstack1.getItem() == Items.FILLED_MAP) {
-						if (destItemStack == null) {
-							destItemStack = itemstack1;
-						} else if (srcItemStack == null) {
-							srcItemStack = itemstack1;
-						} else {
-							return null;
-						}
-					} else {
-						return null;
-					}
-				}
-			}
-	
-			return new CraftingSearchResults(destItemStack, srcItemStack);
-		}
-	
-		// given a pixel coordinate i,j and scale, find the most common pixel within
-		// (i,j) - [i+size,j+size].
+		/**
+		 * given a pixel coordinate i,j and scale, find the most common pixel within range
+		 * @param mapData map's pixels to search
+		 * @param i pixel coordinate x
+		 * @param j pixel coordinate y
+		 * @param scaleDiff scale difference of i,j
+		 * @return most common pixel color within (i,j) - [i+size,j+size] 
+		 */
 		private byte getMapPixel(final MapData mapData, final int i, final int j, final int scaleDiff) {
 	
 			// case: multiple pixels being scaled down to one, choose the most
@@ -129,8 +130,14 @@ public class filledMapTranscribeRecipeFactory implements IRecipeFactory {
 			return 0;
 		}
 	
-		// given world coord x,y in mapData, return map pixel color or 0 if not in
-		// map
+		/**
+		 * get map pixel color given world coord x,y in mapData  
+		 * @param mapData map's pixels to search
+		 * @param x world coord x
+		 * @param z world cord y
+		 * @param scaleDiff scale difference
+		 * @return map pixel color for x,y or 0 if not in map
+		 */
 		private byte getPixelValueForWorldCoord(final MapData mapData, final int x, final int z, final int scaleDiff) {
 			final int scale = 1 << mapData.scale;
 			final int size = pixLength * scale;
@@ -147,8 +154,13 @@ public class filledMapTranscribeRecipeFactory implements IRecipeFactory {
 			return getMapPixel(mapData, psx0, psz0, scaleDiff);
 		}
 	
-		// get intersection in world coords of two map datas, or null if no
-		// intersection
+		/**
+		 * get intersection in of two map datas
+		 * @param destMapData map 1
+		 * @param srcMapData map 2
+		 * @param worldIn current world
+		 * @return Rect of intersection in world coords, or null if no intersection
+		 */
 		private Rect getMapDataIntersection(final MapData destMapData, final MapData srcMapData, final World worldIn) {
 			log("getMapDataIntersection");
 	
@@ -185,16 +197,27 @@ public class filledMapTranscribeRecipeFactory implements IRecipeFactory {
 			return Rect.intersection(r1, r2);
 		}
 	
-		// get the MapData for a given ItemStack, or null if not correct
+		/**
+		 * get MapData for given ItemStack
+		 * @param dest Itemstack to get MapData from
+		 * @param worldIn current world
+		 * @return MapData for a dest ItemStack, or null if not correct
+		 */
 		private MapData getMapData(final ItemStack dest, final World worldIn) {
-			if (dest != null && dest.getItem() instanceof ItemMap) {
+			if (dest != null && dest != ItemStack.EMPTY && dest.getItem() instanceof ItemMap) {
 				return Items.FILLED_MAP.getMapData(dest, worldIn);
 			}
 	
 			return null;
 		}
 	
-		// can we copy any map data from src to dest?
+		/**
+		 * can we transcribe any map data from src to dest?
+		 * @param dest destination map
+		 * @param src source map
+		 * @param worldIn current world
+		 * @return true if any data would be copied, false if not
+		 */
 		public Boolean canTranscribeMap(final ItemStack dest, final ItemStack src, final World worldIn) {
 			log("canTranscribeMap");
 	
@@ -207,14 +230,23 @@ public class filledMapTranscribeRecipeFactory implements IRecipeFactory {
 			return (ri != null);
 		}
 	
-		// is color an unexplored map block color?
+		/**
+		 * is color an unexplored map block color?
+		 * @param color to check
+		 * @return true if color represents unexplored color, false if not
+		 */
 		private boolean isUnexploredColor(final byte color) {
 			// this is calc to detemine unexplored pixels from
 			// net/minecraft/client/gui/MapItemRenderer.java
 			return (color / 4 == 0);
 		}
 	
-		// copy the map data from src to dest if possible
+		/**
+		 * copy the map data from src to dest if possible
+		 * @param dest destination map
+		 * @param src source map
+		 * @param worldIn current world
+		 */
 		public void transcribeMap(final ItemStack dest, final ItemStack src, final World worldIn) {
 			log("transcribeMap begin");
 	
@@ -259,12 +291,15 @@ public class filledMapTranscribeRecipeFactory implements IRecipeFactory {
 					final int wz = destMapData.zCenter - (destSize / 2) + ((dp.z1 + j) * destScale);
 	
 					// calculate destination index for pixel
-					final int index = (dp.z1 + j) * pixLength + (dp.x1 + i);
+					final int dz = (dp.z1 + j);
+					final int dx = (dp.x1 + i);
+					final int index = dz * pixLength + dx;
 	
 					if ((index >= 0) && (index < pixLength * pixLength)) {
 						// only write to blank pixels in dest
 						if (isUnexploredColor(destMapData.colors[index])) {
 							destMapData.colors[index] = this.getPixelValueForWorldCoord(srcMapData, wx, wz, scaleDiff);
+							destMapData.updateMapData(dx, dz);
 						}
 					}
 					/*
@@ -278,101 +313,70 @@ public class filledMapTranscribeRecipeFactory implements IRecipeFactory {
 				// this.log("dirty: "+(dp.x1+i)+","+dp.z1+"..."+(dp.z1+dzsize-1));
 	
 				// mark column dirty so it is resent to clients
-				// 1.7.10: destMapData.setColumnDirty(dp.x1 + i, dp.z1, dp.z1 + dzsize - 1);
-				// 1.12.2: ?
+				// in 1.7.10 was: destMapData.setColumnDirty(dp.x1 + i, dp.z1, dp.z1 + dzsize - 1);
 				destMapData.markDirty();
 			}
 	
 			log("transcribeMap end - done");
 		}
 	
-		// START from RecipesMapCloning
-		
 		/**
-	     * Used to check if a recipe matches current crafting inventory
-	     */
-	    public boolean matches(InventoryCrafting inv, World worldIn)
-	    {
-	        int i = 0;
-	        ItemStack itemstack = ItemStack.EMPTY;
+		 * return the items involved in this recipe, or null if not present
+		 * @param inv inventory to check for tems
+		 * @return dest and src items found, or null if not found
+		 */
+		private CraftingSearchResults getStuff(InventoryCrafting inv) {
+			ItemStack destItemStack = ItemStack.EMPTY;
+			ItemStack srcItemStack = ItemStack.EMPTY;
+	
+			for (int j = 0; j < inv.getSizeInventory(); ++j) {
+				final ItemStack itemstack1 = inv.getStackInSlot(j);
+	
+				if (!itemstack1.isEmpty()) {
+					if (itemstack1.getItem() == Items.FILLED_MAP) {
+						if (destItemStack == ItemStack.EMPTY) {
+							destItemStack = itemstack1;
+						} else if (srcItemStack == ItemStack.EMPTY) {
+							srcItemStack = itemstack1;
+						} else {
+							return null;
+						}
+					} else {
+						return null;
+					}
+				}
+			}
+	
+			return new CraftingSearchResults(destItemStack, srcItemStack);
+		}
+		
+		@Override
+		public boolean matches(InventoryCrafting inv, World worldIn) {
+			final CraftingSearchResults results = this.getStuff(inv);
 
-	        for (int j = 0; j < inv.getSizeInventory(); ++j)
-	        {
-	            ItemStack itemstack1 = inv.getStackInSlot(j);
+			// Currently allowing copy of unrelated maps since no loss for player, but to prevent it add:
+			// canTranscribeMap(results.destItemStack(), results.srcItemStack(), worldIn);
 
-	            if (!itemstack1.isEmpty())
-	            {
-	                if (itemstack1.getItem() == Items.FILLED_MAP)
-	                {
-	                    if (!itemstack.isEmpty())
-	                    {
-	                        return false;
-	                    }
-
-	                    itemstack = itemstack1;
-	                }
-	                else
-	                {
-	                    if (itemstack1.getItem() != Items.MAP)
-	                    {
-	                        return false;
-	                    }
-
-	                    ++i;
-	                }
-	            }
-	        }
-
-	        return !itemstack.isEmpty() && i > 0;
-	    }
-
-	    /**
-	     * Returns an Item that is the result of this recipe
-	     */
+			return (results != null) && (results.srcItemStack() != ItemStack.EMPTY) && (results.destItemStack() != ItemStack.EMPTY);			
+		}
+		 
+		@Override
 	    public ItemStack getCraftingResult(InventoryCrafting inv)
 	    {
-	        int i = 0;
-	        ItemStack itemstack = ItemStack.EMPTY;
-
-	        for (int j = 0; j < inv.getSizeInventory(); ++j)
+	    	final CraftingSearchResults results = this.getStuff(inv);
+	    	
+			if (results != null && results.srcItemStack() != ItemStack.EMPTY && results.destItemStack() != ItemStack.EMPTY)
 	        {
-	            ItemStack itemstack1 = inv.getStackInSlot(j);
+	            ItemStack itemstack2 = new ItemStack(Items.FILLED_MAP, 1, results.destItemStack().getMetadata());
 
-	            if (!itemstack1.isEmpty())
+	            if (results.destItemStack().hasDisplayName())
 	            {
-	                if (itemstack1.getItem() == Items.FILLED_MAP)
-	                {
-	                    if (!itemstack.isEmpty())
-	                    {
-	                        return ItemStack.EMPTY;
-	                    }
-
-	                    itemstack = itemstack1;
-	                }
-	                else
-	                {
-	                    if (itemstack1.getItem() != Items.MAP)
-	                    {
-	                        return ItemStack.EMPTY;
-	                    }
-
-	                    ++i;
-	                }
-	            }
-	        }
-
-	        if (!itemstack.isEmpty() && i >= 1)
-	        {
-	            ItemStack itemstack2 = new ItemStack(Items.FILLED_MAP, i + 1, itemstack.getMetadata());
-
-	            if (itemstack.hasDisplayName())
-	            {
-	                itemstack2.setStackDisplayName(itemstack.getDisplayName());
+	                itemstack2.setStackDisplayName(results.destItemStack().getDisplayName());
 	            }
 
-	            if (itemstack.hasTagCompound())
+	            if (results.destItemStack().hasTagCompound())
 	            {
-	                itemstack2.setTagCompound(itemstack.getTagCompound());
+	                itemstack2.setTagCompound(results.destItemStack().getTagCompound());
 	            }
 
 	            return itemstack2;
@@ -383,15 +387,18 @@ public class filledMapTranscribeRecipeFactory implements IRecipeFactory {
 	        }
 	    }
 
+		@Override
 	    public ItemStack getRecipeOutput()
 	    {
 	        return ItemStack.EMPTY;
 	    }
 
+		@Override
 	    public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
 	    {
 	        NonNullList<ItemStack> nonnulllist = NonNullList.<ItemStack>withSize(inv.getSizeInventory(), ItemStack.EMPTY);
 
+	        // return all unused items
 	        for (int i = 0; i < nonnulllist.size(); ++i)
 	        {
 	            ItemStack itemstack = inv.getStackInSlot(i);
@@ -401,6 +408,7 @@ public class filledMapTranscribeRecipeFactory implements IRecipeFactory {
 	        return nonnulllist;
 	    }
 
+		@Override
 	    public boolean isDynamic()
 	    {
 	        return true;
@@ -409,63 +417,16 @@ public class filledMapTranscribeRecipeFactory implements IRecipeFactory {
 	    /**
 	     * Used to determine if this recipe can fit in a grid of the given width/height
 	     */
+		@Override
 	    public boolean canFit(int width, int height)
 	    {
 	        return width >= 3 && height >= 3;
 	    }
-	    
-	    // END from RecipesMapCloning
-	    
-	    /*
 		
-		@Override
-		public boolean matches(final InventoryCrafting inv, final World worldIn) {
-	
-			// debug
-			// this.world = worldIn;
-	
-			final CraftingSearchResults results = this.getStuff(inv);
-	
-			return (results != null) && (results.srcItemStack() != null);
-			// && canTranscribeMap(results.destItemStack(), results.srcItemStack(),
-			// worldIn);
-		}
-	
-		@Override
-		public ItemStack getCraftingResult(final InventoryCrafting inv) {
-	
-			final CraftingSearchResults results = this.getStuff(inv);
-	
-			if (results != null && results.srcItemStack() != null) {
-				// did not work: seems to cause map transcription to be missing
-				// sometimes
-				// ItemStack itemstack = results.destItemStack().copy();
-	
-				// FUTURE: ItemStack.getItemDamage becomes ItemStack.getMetaData
-				// after 1.7.10
-				final ItemStack itemstack = new ItemStack(Items.FILLED_MAP, 1, results.destItemStack().getItemDamage());
-	
-				if (results.destItemStack().hasDisplayName()) {
-					itemstack.setStackDisplayName(results.destItemStack().getDisplayName());
-				}
-	
-				return itemstack;
-			} else {
-				return null;
-			}
-		}
-
-		@Override
-	    public ItemStack getRecipeOutput() {
-	        return ItemStack.EMPTY;
-	    }
-	    
-		@Override
-	    public boolean canFit(int width, int height) {
-			return (width * height) >= 2;
-		}
-		
-		// handle returning src maps to player and transcribing onto dest
+		/**
+		 * handle returning src maps to player and transcribing onto dest
+		 * also dirties map so server sends new data to clients
+		 */
 		@SubscribeEvent
 		public void onCrafting(final ItemCraftedEvent event) {
 	
@@ -483,8 +444,7 @@ public class filledMapTranscribeRecipeFactory implements IRecipeFactory {
 			final CraftingSearchResults results = this.getStuff(inv);
 	
 			if (this.matches(inv, event.player.world)) {
-				// only transcribe on server, and let it send updated map data to
-				// client
+				// only transcribe on server, and let it send updated map data to client
 				if (!event.player.world.isRemote) {
 					this.transcribeMap(event.crafting, results.srcItemStack(), event.player.world);
 				}
@@ -495,35 +455,12 @@ public class filledMapTranscribeRecipeFactory implements IRecipeFactory {
 					if (slot == null) {
 						continue;
 					} else if (slot == results.srcItemStack()) {
-						// increment stack size by 1 so when decreased automatically
-						// by 1 there is still 1 there
-						// 1.7.10: slot.stackSize += 1;
-						// 1.12.2: ?
+						// increment stack size by 1 so when decreased automatically by 1 there is still 1 there
 						slot.grow(1);
 					}
 				}
 			}
 	
 		}
-		*/
-	
-		/*
-		 * // For future Forge/MC versions:
-		 * 
-		 * @Override public ItemStack[] getRemainingItems(InventoryCrafting inv) {
-		 * CraftingSearchResults results = this.getStuff(inv);
-		 * 
-		 * ItemStack[] aitemstack = new ItemStack[inv.getSizeInventory()];
-		 * 
-		 * for (int i = 0; i < aitemstack.length; ++i) { ItemStack itemstack =
-		 * inv.getStackInSlot(i);
-		 * 
-		 * if (itemstack != null) && itemstack.getItem().hasContainerItem()) {
-		 * aitemstack[i] = new ItemStack(itemstack.getItem().getContainerItem()); }
-		 * 
-		 * }
-		 * 
-		 * return aitemstack; }
-		 */
 	}
 }
