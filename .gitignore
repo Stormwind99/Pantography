@@ -15,6 +15,7 @@ gradle-app.setting
 
 # ignore Minecraft and Forge files
 .classpath
+.gradle
 .project
 .settings/
 banned-ips.json
@@ -22,6 +23,9 @@ banned-players.json
 bin/
 config/
 eula.txt
+gradle/
+gradlew
+gradlew.bat
 logs/
 ops.json
 options.txt
@@ -31,3 +35,6 @@ usercache.json
 usernamecache.json
 whitelist.json
 world/
+
+*_Client.launch
+*_Server.launch

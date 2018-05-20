@@ -1,31 +1,30 @@
 package com.wumple.pantography;
 
+import org.apache.logging.log4j.LogManager;
+//import net.minecraft.util.ChatComponentText;
+import org.apache.logging.log4j.Logger;
+
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Multisets;
 
-import net.minecraft.world.storage.MapData;
-import net.minecraft.world.World;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemMap;
-import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.init.Items;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
-import cpw.mods.fml.common.registry.GameRegistry;
-// debug
-import net.minecraft.entity.player.EntityPlayer;
-//import net.minecraft.util.ChatComponentText;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.item.ItemMap;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.world.World;
+import net.minecraft.world.storage.MapData;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 // recipe to copy map data from one filled map into another filled map
 public class filledMapTranscribeRecipe implements IRecipe {
 
-	public static final Logger logger = LogManager.getLogger("Pantography");
+	public static final Logger logger = LogManager.getLogger(Main.MODID);
 	private static final int pixLength = 128;
 	// private EntityPlayer player;
 	// private World world;
@@ -58,7 +57,7 @@ public class filledMapTranscribeRecipe implements IRecipe {
 			final ItemStack itemstack1 = inv.getStackInSlot(j);
 
 			if (itemstack1 != null) {
-				if (itemstack1.getItem() == Items.filled_map) {
+				if (itemstack1.getItem() == Items.FILLED_MAP) {
 					if (destItemStack == null) {
 						destItemStack = itemstack1;
 					} else if (srcItemStack == null) {
@@ -173,7 +172,7 @@ public class filledMapTranscribeRecipe implements IRecipe {
 	// get the MapData for a given ItemStack, or null if not correct
 	private MapData getMapData(final ItemStack dest, final World worldIn) {
 		if (dest != null && dest.getItem() instanceof ItemMap) {
-			return Items.filled_map.getMapData(dest, worldIn);
+			return Items.FILLED_MAP.getMapData(dest, worldIn);
 		}
 
 		return null;
@@ -263,7 +262,9 @@ public class filledMapTranscribeRecipe implements IRecipe {
 			// this.log("dirty: "+(dp.x1+i)+","+dp.z1+"..."+(dp.z1+dzsize-1));
 
 			// mark column dirty so it is resent to clients
-			destMapData.setColumnDirty(dp.x1 + i, dp.z1, dp.z1 + dzsize - 1);
+			// 1.7.10: destMapData.setColumnDirty(dp.x1 + i, dp.z1, dp.z1 + dzsize - 1);
+			// 1.12.2: ?
+			destMapData.markDirty();
 		}
 
 		log("transcribeMap end - done");
@@ -294,7 +295,7 @@ public class filledMapTranscribeRecipe implements IRecipe {
 
 			// FUTURE: ItemStack.getItemDamage becomes ItemStack.getMetaData
 			// after 1.7.10
-			final ItemStack itemstack = new ItemStack(Items.filled_map, 1, results.destItemStack().getItemDamage());
+			final ItemStack itemstack = new ItemStack(Items.FILLED_MAP, 1, results.destItemStack().getItemDamage());
 
 			if (results.destItemStack().hasDisplayName()) {
 				itemstack.setStackDisplayName(results.destItemStack().getDisplayName());
@@ -348,7 +349,9 @@ public class filledMapTranscribeRecipe implements IRecipe {
 				} else if (slot == results.srcItemStack()) {
 					// increment stack size by 1 so when decreased automatically
 					// by 1 there is still 1 there
-					slot.stackSize += 1;
+					// 1.7.10: slot.stackSize += 1;
+					// 1.12.2: ?
+					slot.grow(1);
 				}
 			}
 		}

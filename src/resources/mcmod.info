@@ -1,6 +1,6 @@
 [
 {
-  "modid": "Pantography",
+  "modid": "pantography",
   "name": "Pantography",
   "description": "Copy Map item data to other Maps including different scale Maps.",
   "version": "$version",
