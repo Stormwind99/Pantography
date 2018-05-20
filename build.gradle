@@ -1,3 +1,7 @@
+// build.gradle for mod
+// Based on build.gradle from Botania by vazkii - https://botaniamod.net/
+
+// START do not edit
 buildscript {
     repositories {
         jcenter()
@@ -7,7 +11,15 @@ buildscript {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
 }
+
+plugins {
+  id "com.matthewprenger.cursegradle" version "1.0.10"
+}
+
 apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'com.matthewprenger.cursegradle'
+apply plugin: 'maven'
+// END do not edit
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
 sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
@@ -15,23 +27,38 @@ compileJava {
     sourceCompatibility = targetCompatibility = '1.8'
 }
 
+import groovy.json.JsonSlurper
+import groovy.json.JsonOutput
+
+ext.configFile = file('build.properties')
+
+ext.config = parseConfig(configFile)
+ext.priv = parseConfig(file('private.properties'))
+
+
 minecraft {
-    version = "1.12.2-14.23.3.2698"
-    //runDir = "run"
-	runDir = "eclipse"
-    
-    // the mappings can be changed at any time, and must be in the following format.
-    // snapshot_YYYYMMDD   snapshot are built nightly.
-    // stable_#            stables are built at the discretion of the MCP team.
-    // Use non-default mappings at your own risk. they may not always work.
-    // simply re-run your setup task after changing the mappings to update your workspace.
-    mappings = "snapshot_20171003"
+    version = "${config.mc_version}-${config.forge_version}"
+    runDir = "eclipse"
+
+    mappings = config.mc_mappings
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
+
+    // This does the token replacement so names, version numbers, etc only need to be in one authoritative file
+    // TODO replace with a token such as @VERSION@
+    replace 'GRADLE:MOD_ID', config.mod_id
+    replace 'GRADLE:MOD_NAME', config.mod_name
+    replace 'GRADLE:BUILD', config.build_number
+    replace 'GRADLE:VERSION', config.version
+    replace 'GRADLE:INTERNALVERSIONMAJOR', config.internal_version_major
+    replace 'GRADLE:DEPENDENCIES', config.dependencies
+    replace 'GRADLE:UPDATEJSON', config.updatejson
+
+    replaceIn 'LibMisc.java'
 }
 
-version = "1.1.0"
-group= "com.wumple.pantography" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "Pantography"
+version = config.version
+group = config.group // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = config.mod_id
 
 sourceSets {
     main {
@@ -45,7 +72,7 @@ dependencies {
     // or you may define them like so..
     //compile "some.group:artifact:version:classifier"
     //compile "some.group:artifact:version"
-      
+
     // real examples
     //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
     //compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
@@ -65,13 +92,49 @@ processResources
     // replace stuff in mcmod.info, nothing else
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
-                
+
         // replace version and mcversion
         expand 'version':project.version, 'mcversion':project.minecraft.version
     }
-        
+
     // copy everything else, thats not the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
+    }
+}
+
+jar {
+    //rename the default output, for some better sanity with scripts
+    archiveName = "${baseName}-${minecraft.version}-${version}.${extension}"
+
+    exclude "**/*.bat"
+    exclude "**/*.psd"
+    exclude "**/*.exe"
+}
+
+/// Local functions
+
+def parseConfig(File config) {
+    config.withReader {
+        def prop = new Properties()
+        prop.load(it)
+        return (new ConfigSlurper().parse(prop))
+    }
+}
+
+/// CurseGradle
+
+curseforge {
+    apiKey = priv.cfkey
+    project {
+        id = config.curseforge_id
+        changelog = { ->
+            def updateJsonFile = new File("${projectDir}/${config.changelog}")
+            def updateJson = new JsonSlurper().parse(updateJsonFile) as Map
+            // this should error if changelog is missing change for this version - add one!
+            def changeinfo = new String(updateJson."${minecraft.version}"."${version}")
+            return changeinfo
+        }
+        releaseType = "release"
     }
 }

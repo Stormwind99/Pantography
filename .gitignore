@@ -1,5 +1,6 @@
-.gradle
-build/
+## gradle
+/.gradle
+/build/
 
 # Ignore Gradle GUI config
 gradle-app.setting
@@ -12,6 +13,9 @@ gradle-app.setting
 
 # # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
 # gradle/wrapper/gradle-wrapper.properties
+
+## Private Stuffs
+/private.properties
 
 # ignore Minecraft and Forge files
 .classpath
@@ -36,5 +40,42 @@ usernamecache.json
 whitelist.json
 world/
 
-*_Client.launch
-*_Server.launch
+## ForgeGradle
+/run
+/*_Client.launch
+/*_Server.launch
+
+## scratch space
+/old
+/tmp
+
+## Windows
+Thumbs.db
+
+### OSX (adds a lot of garbage)###
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon must end with two \r
+Icon
+
+
+# Thumbnails
+._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+

@@ -1,4 +1,4 @@
-package com.wumple.pantography;
+package com.wumple.pantography.common;
 
 import org.apache.logging.log4j.LogManager;
 //import net.minecraft.util.ChatComponentText;
@@ -24,7 +24,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 // recipe to copy map data from one filled map into another filled map
 public class filledMapTranscribeRecipe implements IRecipe {
 
-	public static final Logger logger = LogManager.getLogger(Main.MODID);
+	public static final Logger logger = LogManager.getLogger(LibMisc.MOD_ID);
 	private static final int pixLength = 128;
 	// private EntityPlayer player;
 	// private World world;

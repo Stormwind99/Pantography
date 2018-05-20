@@ -1,4 +1,4 @@
-package com.wumple.pantography;
+package com.wumple.pantography.common;
 
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -6,16 +6,13 @@ import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import com.wumple.pantography.common.LibMisc;
 
-@Mod(modid = Main.MODID, name = Main.MODNAME, version = Main.VERSION, updateJSON = "https://raw.githubusercontent.com/Stormwind99/Pantography/master/update.json")
-public class Main {
+@Mod(modid = LibMisc.MOD_ID, name = LibMisc.MOD_NAME, version = LibMisc.VERSION, dependencies = LibMisc.DEPENDENCIES, updateJSON=LibMisc.UPDATEJSON)
+public class Pantography {
 
-    public static final String MODID = "pantography";
-    public static final String MODNAME = "Pantography";
-    public static final String VERSION = "1.1.0";
-        
     @Instance
-    public static Main instance = new Main();
+    public static Pantography instance = new Pantography();
         
      
     @EventHandler

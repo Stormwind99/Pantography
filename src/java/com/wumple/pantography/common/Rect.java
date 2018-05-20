@@ -1,4 +1,4 @@
-package com.wumple.pantography;
+package com.wumple.pantography.common;
 
 //a simple rectangle (x1,z1) to (x2,z2)
 class Rect {
