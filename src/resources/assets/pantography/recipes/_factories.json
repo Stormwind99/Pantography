@@ -1,0 +1,5 @@
+{
+    "recipes": {
+        "filled_map_transcribe": "com.wumple.pantography.common.filledMapTranscribeRecipeFactory"
+    }
+}
