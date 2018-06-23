@@ -1,5 +1,5 @@
 # Pantography
-Minecraft plugin: Copy Map item data to other Maps including different scale Maps.
+Minecraft mod: Copy Map item data to other Maps including different scale Maps.
 
 A pantograph is "is a mechanical linkage connected in a manner based on parallelograms so that the movement of one pen, in tracing an image, produces identical movements in a second pen. If a line drawing is traced by the first point, an identical, enlarged, or miniaturized copy will be drawn by a pen fixed to the other" \[[Wikipedia](https://en.wikipedia.org/wiki/Pantograph)\].
 
