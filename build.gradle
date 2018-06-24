@@ -53,7 +53,7 @@ minecraft {
     replace 'GRADLE:DEPENDENCIES', config.dependencies
     replace 'GRADLE:UPDATEJSON', config.updatejson
 
-    replaceIn 'LibMisc.java'
+    replaceIn 'Reference.java'
 }
 
 version = config.version
@@ -94,7 +94,7 @@ processResources
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
 
-        // replace version and mcversion
+        // replace mcmod.info variables with build.properties settings
         expand 'version':project.version, 'mcversion':project.minecraft.version, 'updatejson':config.updatejson
     }
 

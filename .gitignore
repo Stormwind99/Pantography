@@ -1,8 +1,9 @@
+#eclipse
+/eclipse
+
 ## gradle
 /.gradle
 /build/
-
-/eclipse/
 
 # Ignore Gradle GUI config
 gradle-app.setting
@@ -44,6 +45,7 @@ world/
 
 ## ForgeGradle
 /run
+/libs
 /*_Client.launch
 /*_Server.launch
 
