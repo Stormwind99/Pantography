@@ -10,8 +10,6 @@
   "url": "https://github.com/Stormwind99/Pantography",
   "updateJSON": "$updatejson",
   "authorList": [ "Stormwind99" ],
-  "parent": "",
-  "screenshots": [],
   "dependencies": [
     "mod_MinecraftForge"
   ]
