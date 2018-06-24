@@ -5,15 +5,15 @@
   "description": "Copy Map item data to other Maps including different scale Maps.",
   "version": "$version",
   "mcversion": "$mcversion",
-  "credits": "By Stormwind",
+  "credits": "By Stormwind99",
   "logoFile": "Pantography.png",
   "url": "https://github.com/Stormwind99/Pantography",
   "updateJSON": "$updatejson",
-  "authorList": [ "Stormwind" ],
+  "authorList": [ "Stormwind99" ],
   "parent": "",
   "screenshots": [],
   "dependencies": [
-     "mod_MinecraftForge"
+    "mod_MinecraftForge"
   ]
 }
 ]
