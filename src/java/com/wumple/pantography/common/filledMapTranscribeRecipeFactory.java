@@ -42,7 +42,7 @@ public class filledMapTranscribeRecipeFactory implements IRecipeFactory {
     public IRecipe parse(JsonContext context, JsonObject json) {
         ShapelessOreRecipe recipe = ShapelessOreRecipe.factory(context, json);
 
-        return new filledMapTranscribeRecipe(new ResourceLocation(LibMisc.MOD_ID, "filled_map_transcribe_crafting"), recipe.getRecipeOutput());
+        return new filledMapTranscribeRecipe(new ResourceLocation(Reference.MOD_ID, "filled_map_transcribe_crafting"), recipe.getRecipeOutput());
     }
 
     /**
@@ -63,7 +63,7 @@ public class filledMapTranscribeRecipeFactory implements IRecipeFactory {
     	private static final int pixLength = 128;
 
     	// Basic logging for debugging
-		public static final Logger logger = LogManager.getLogger(LibMisc.MOD_ID);
+		public static final Logger logger = LogManager.getLogger(Reference.MOD_ID);
 		/**
 		 * // Enable for primitive live debugging
 		 * private EntityPlayer player;

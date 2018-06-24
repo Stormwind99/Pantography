@@ -11,6 +11,7 @@ class CraftingSearchResults {
 	 * null if none found
 	 */
 	private final ItemStack m_destItemStack;
+
 	/**
 	 * Crafting source item stack - the stack to be copied from
 	 * null if none found

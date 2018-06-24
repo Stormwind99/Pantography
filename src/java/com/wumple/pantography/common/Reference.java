@@ -4,7 +4,7 @@ package com.wumple.pantography.common;
  * Mod constants for versioning, etc - many from Gradle
  * @see Pantography
  */
-public final class LibMisc {
+public final class Reference {
 
 	// Mod Constants
 	public static final String MOD_ID = "GRADLE:MOD_ID";
