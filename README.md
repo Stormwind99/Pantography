@@ -17,14 +17,14 @@ Example uses:
 
 ## Screenshots
 
-![Higher scale to lower scale map copy](https://raw.githubusercontent.com/Stormwind99/Pantography/master/src/resources/screenshots/higher-to-lower-scale-map.png)
+![Higher scale to lower scale map copy](https://raw.githubusercontent.com/Stormwind99/Pantography/master/other/screenshots/higher-to-lower-scale-map.png)
 
 A higher scale source map has been copied into a lower scale destination map. Since the source map had less detail, the copied map pixels are large. The large map pixels will be replaced with normal map detail when the map is used in that area.
 
-![Lower scale to higher scale map copy](https://raw.githubusercontent.com/Stormwind99/Pantography/master/src/resources/screenshots/lower-to-higher-scale-map.png)
+![Lower scale to higher scale map copy](https://raw.githubusercontent.com/Stormwind99/Pantography/master/other/screenshots/lower-to-higher-scale-map.png)
 
 A lower scale source map has been copied into a higher scale destination map.  The lower scale source map's data shows as an isolated rectangle in the destination map.
 
-![Recipe](https://raw.githubusercontent.com/Stormwind99/Pantography/master/src/resources/screenshots/example-copy.png)
+![Recipe](https://raw.githubusercontent.com/Stormwind99/Pantography/master/other/screenshots/example-copy.png)
 
 Example of copying filled Map data from one Map (on the right) to the other Map (on the left)
