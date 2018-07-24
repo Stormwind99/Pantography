@@ -1,12 +1,13 @@
 {
   "homepage": "https://github.com/Stormwind99/Pantography",
   "promos": {
-    "1.12.2-latest": "1.1.1",
-    "1.12.2-recommended": "1.1.1",
+    "1.12.2-latest": "1.2.0",
+    "1.12.2-recommended": "1.2.0",
     "1.7.10-latest": "1.0.1",
     "1.7.10-recommended": "1.0.1"
   },
   "1.12.2": {
+    "1.2.0": "Signing jar",
     "1.1.1": "Small cleanup, updated to Forge 2705",
     "1.1.0": "Updated to MC 1.12.2",
     "1.0.1": "Eliminated all use of MCreator",

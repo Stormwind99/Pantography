@@ -1,17 +1,15 @@
 [
 {
-  "modid": "pantography",
-  "name": "Pantography",
-  "description": "Copy Map item data to other Maps including different scale Maps.",
-  "version": "$version",
-  "mcversion": "$mcversion",
-  "credits": "By Stormwind99",
-  "logoFile": "Pantography.png",
-  "url": "https://github.com/Stormwind99/Pantography",
-  "updateJSON": "$updatejson",
-  "authorList": [ "Stormwind99" ],
-  "dependencies": [
-    "mod_MinecraftForge"
-  ]
+  "modid": "${mod_id}",
+  "name": "${mod_name}",
+  "description": "${mod_description}",
+  "version": "${version}",
+  "mcversion": "${minecraft.version}",
+  "url": "${url}",
+  "updateJSON": "${updatejson}",
+  "authorList": [ ${mod_authors} ],
+  "credits": "${mod_credits}",
+  "logoFile": "${mod_logo}",
+  "dependencies": [ ${mod_dependencies} ]
 }
 ]
