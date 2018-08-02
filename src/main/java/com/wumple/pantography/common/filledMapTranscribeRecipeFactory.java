@@ -2,10 +2,6 @@ package com.wumple.pantography.common;
 
 import javax.annotation.Nonnull;
 
-import org.apache.logging.log4j.LogManager;
-//import net.minecraft.util.ChatComponentText;
-import org.apache.logging.log4j.Logger;
-
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Multisets;
@@ -68,30 +64,18 @@ public class filledMapTranscribeRecipeFactory implements IRecipeFactory
          */
         private static final int pixLength = 128;
 
-        // Basic logging for debugging
-        public static final Logger logger = LogManager.getLogger(Reference.MOD_ID);
-
-        /**
-         * // Enable for primitive live debugging
-         * private EntityPlayer player;
-         * private World world;
-         */
-
         /**
          * debug logging
          * 
          * @param msg
          *            message to log
          */
-        private void log(final String msg)
+        protected void log(final String msg)
         {
-            logger.debug(msg);
-
-            /**
-             * // Enable for primitive debugging 
-             * if (player != null) 
-             * { player.addChatMessage(new ChatComponentText(msg)); }
-             */
+            if (ModConfig.zdebugging.debug)
+            {
+                Pantography.logger.info(msg);
+            }
         }
 
         /**
@@ -107,7 +91,7 @@ public class filledMapTranscribeRecipeFactory implements IRecipeFactory
          *            scale difference of i,j
          * @return most common pixel color within (i,j) - [i+size,j+size]
          */
-        private byte getMapPixel(final MapData mapData, final int i, final int j, final int scaleDiff)
+        protected byte getMapPixel(final MapData mapData, final int i, final int j, final int scaleDiff)
         {
 
             // case: multiple pixels being scaled down to one, choose the most
@@ -164,7 +148,7 @@ public class filledMapTranscribeRecipeFactory implements IRecipeFactory
          *            scale difference
          * @return map pixel color for x,y or 0 if not in map
          */
-        private byte getPixelValueForWorldCoord(final MapData mapData, final int x, final int z, final int scaleDiff)
+        protected byte getPixelValueForWorldCoord(final MapData mapData, final int x, final int z, final int scaleDiff)
         {
             final int scale = 1 << mapData.scale;
             final int size = pixLength * scale;
@@ -182,20 +166,36 @@ public class filledMapTranscribeRecipeFactory implements IRecipeFactory
         }
 
         /**
+         * get rect representing a map's area
+         * 
+         * @param srcMapData
+         *            map
+         * @return Rect of map area in world coords
+         */
+        protected Rect getMapRect(final MapData srcMapData)
+        {
+            final int srcScale = 1 << srcMapData.scale;
+            final int srcSize = pixLength * srcScale;
+            final Rect r2 = new Rect();
+            r2.x1 = srcMapData.xCenter - srcSize / 2;
+            r2.z1 = srcMapData.zCenter - srcSize / 2;
+            r2.x2 = srcMapData.xCenter + srcSize / 2;
+            r2.z2 = srcMapData.zCenter + srcSize / 2;
+
+            return r2;
+        }
+
+        /**
          * get intersection in of two map datas
          * 
          * @param destMapData
          *            map 1
          * @param srcMapData
          *            map 2
-         * @param worldIn
-         *            current world
          * @return Rect of intersection in world coords, or null if no intersection
          */
-        private Rect getMapDataIntersection(final MapData destMapData, final MapData srcMapData, final World worldIn)
+        protected Rect getMapDataIntersection(final MapData destMapData, final MapData srcMapData)
         {
-            log("getMapDataIntersection");
-
             if (srcMapData == null || destMapData == null)
             {
                 return null;
@@ -208,27 +208,16 @@ public class filledMapTranscribeRecipeFactory implements IRecipeFactory
             }
 
             // calculate map corners
-            final int destScale = 1 << destMapData.scale;
-            final int destSize = pixLength * destScale;
-            final Rect r1 = new Rect();
-            r1.x1 = destMapData.xCenter - destSize / 2;
-            r1.z1 = destMapData.zCenter - destSize / 2;
-            r1.x2 = destMapData.xCenter + destSize / 2;
-            r1.z2 = destMapData.zCenter + destSize / 2;
+            final Rect r1 = getMapRect(destMapData);
+            final Rect r2 = getMapRect(srcMapData);
 
-            final int srcScale = 1 << srcMapData.scale;
-            final int srcSize = pixLength * srcScale;
-            final Rect r2 = new Rect();
-            r2.x1 = srcMapData.xCenter - srcSize / 2;
-            r2.z1 = srcMapData.zCenter - srcSize / 2;
-            r2.x2 = srcMapData.xCenter + srcSize / 2;
-            r2.z2 = srcMapData.zCenter + srcSize / 2;
-
-            log("dest: " + r1.str());
-            log("src:  " + r2.str());
+            log("destMap area: " + r1.str());
+            log("srcMap area:  " + r2.str());
 
             // find intersection
-            return Rect.intersection(r1, r2);
+            Rect intersection = Rect.intersection(r1, r2);
+            log("intersection: " + ((intersection == null) ? "none" : intersection.str()));
+            return intersection;
         }
 
         /**
@@ -240,7 +229,7 @@ public class filledMapTranscribeRecipeFactory implements IRecipeFactory
          *            current world
          * @return MapData for a dest ItemStack, or null if not correct
          */
-        private MapData getMapData(final ItemStack dest, final World worldIn)
+        protected MapData getMapData(final ItemStack dest, final World worldIn)
         {
             if (dest != null && dest != ItemStack.EMPTY && dest.getItem() instanceof ItemMap)
             {
@@ -263,13 +252,11 @@ public class filledMapTranscribeRecipeFactory implements IRecipeFactory
          */
         public Boolean canTranscribeMap(final ItemStack dest, final ItemStack src, final World worldIn)
         {
-            log("canTranscribeMap");
-
             final MapData destMapData = getMapData(dest, worldIn);
             final MapData srcMapData = getMapData(src, worldIn);
 
             // find intersection
-            final Rect ri = getMapDataIntersection(destMapData, srcMapData, worldIn);
+            final Rect ri = getMapDataIntersection(destMapData, srcMapData);
 
             return (ri != null);
         }
@@ -281,7 +268,7 @@ public class filledMapTranscribeRecipeFactory implements IRecipeFactory
          *            to check
          * @return true if color represents unexplored color, false if not
          */
-        private boolean isUnexploredColor(final byte color)
+        protected boolean isUnexploredColor(final byte color)
         {
             // this is calc to detemine unexplored pixels from
             // net/minecraft/client/gui/MapItemRenderer.java
@@ -306,7 +293,7 @@ public class filledMapTranscribeRecipeFactory implements IRecipeFactory
             final MapData srcMapData = getMapData(src, worldIn);
 
             // find intersection
-            final Rect ri = getMapDataIntersection(destMapData, srcMapData, worldIn);
+            final Rect ri = getMapDataIntersection(destMapData, srcMapData);
 
             if (ri == null)
             {
@@ -314,7 +301,7 @@ public class filledMapTranscribeRecipeFactory implements IRecipeFactory
                 return;
             }
 
-            log("intr: " + ri.str());
+            log("intersection area: " + ri.str());
 
             // now convert world space intersection into dest pixel space
             // dest pixel space is byte array of 128x128 with world xCenter and
@@ -331,8 +318,10 @@ public class filledMapTranscribeRecipeFactory implements IRecipeFactory
             final int dzsize = dp.z2 - dp.z1;
             final int scaleDiff = srcMapData.scale - destMapData.scale;
 
-            log("dp:   " + dp.str());
+            log("destPixelSpace:   " + dp.str());
             log("size: (" + dxsize + "," + dzsize + ") scaleDiff " + scaleDiff);
+            long pixelsEvaluated = 0;
+            long pixelsCopied = 0;
 
             // walk dest pixels, copying appropriate pixel from src for each one
             for (int i = 0; i < dxsize; i++)
@@ -352,32 +341,33 @@ public class filledMapTranscribeRecipeFactory implements IRecipeFactory
 
                     if ((index >= 0) && (index < pixLength * pixLength))
                     {
+                        pixelsEvaluated++;
                         // only write to blank pixels in dest
                         if (isUnexploredColor(destMapData.colors[index]))
                         {
-                            destMapData.colors[index] = this.getPixelValueForWorldCoord(srcMapData, wx, wz, scaleDiff);
-                            destMapData.updateMapData(dx, dz);
+                            byte newColor = this.getPixelValueForWorldCoord(srcMapData, wx, wz, scaleDiff);
+                            if (!isUnexploredColor(newColor))
+                            {
+                                destMapData.colors[index] = newColor;
+                                destMapData.updateMapData(dx, dz);
+                                pixelsCopied++;
+                            }
                         }
                     }
                     /*
-                     * // debug 
-                     * else 
-                     * { 
-                     * this.log("OOB2: ij ("+i+"," +j+") w ("+wx+","+wz+") index "+index); 
-                     * destMapData.markDirty(); 
-                     * return;
-                     * }
+                     * // debug else { this.log("OOB2: ij ("+i+"," +j+") w ("+wx+","+wz+") index "+index); destMapData.markDirty(); return; }
                      */
                 }
+            }
 
-                // debug
-                // this.log("dirty: "+(dp.x1+i)+","+dp.z1+"..."+(dp.z1+dzsize-1));
-
-                // mark column dirty so it is resent to clients
-                // in 1.7.10 was: destMapData.setColumnDirty(dp.x1 + i, dp.z1, dp.z1 + dzsize - 1);
+            // mark map dirty so resent to clients and persisted
+            if (pixelsCopied > 0)
+            {
                 destMapData.markDirty();
             }
 
+            log("pixelsEvaluated: " + pixelsEvaluated);
+            log("pixelsCopied: " + pixelsCopied);
             log("transcribeMap end - done");
         }
 
@@ -388,7 +378,7 @@ public class filledMapTranscribeRecipeFactory implements IRecipeFactory
          *            inventory to check for tems
          * @return dest and src items found, or null if not found
          */
-        private CraftingSearchResults getStuff(InventoryCrafting inv)
+        protected CraftingSearchResults getStuff(InventoryCrafting inv)
         {
             ItemStack destItemStack = ItemStack.EMPTY;
             ItemStack srcItemStack = ItemStack.EMPTY;
@@ -427,12 +417,27 @@ public class filledMapTranscribeRecipeFactory implements IRecipeFactory
         @Override
         public boolean matches(InventoryCrafting inv, World worldIn)
         {
+            log("recipeMatches begin");
             final CraftingSearchResults results = this.getStuff(inv);
 
-            // Currently allowing copy of unrelated maps since no loss for player, but to prevent it add:
+            // Currently disallowing copy of unrelated maps since no loss for player, but to allow it remove:
             // canTranscribeMap(results.destItemStack(), results.srcItemStack(), worldIn);
 
-            return (results != null) && (results.srcItemStack() != ItemStack.EMPTY) && (results.destItemStack() != ItemStack.EMPTY);
+            boolean mapsValid = (results != null) && 
+                    (results.srcItemStack() != ItemStack.EMPTY) && 
+                    (results.destItemStack() != ItemStack.EMPTY);
+            
+            boolean canTranscribe = false;
+            if (mapsValid)
+            {
+                canTranscribe = canTranscribeMap(results.destItemStack(), results.srcItemStack(), worldIn);
+            }
+            boolean doesMatch = mapsValid && ((!ModConfig.matchOnlyIntersectingMaps) || canTranscribe);
+
+            log("doesMatch " + doesMatch + " mapsValid " + mapsValid + " canTranscribe " + canTranscribe + " matchOnlyIntersectingMaps " + ModConfig.matchOnlyIntersectingMaps);
+            log("recipeMatches end");
+
+            return doesMatch;
         }
 
         @Override
@@ -504,10 +509,6 @@ public class filledMapTranscribeRecipeFactory implements IRecipeFactory
         @SubscribeEvent
         public void onCrafting(final ItemCraftedEvent event)
         {
-
-            // debug log
-            // player = event.player;
-
             final IInventory craftMatrix = event.craftMatrix;
             if (!(craftMatrix instanceof InventoryCrafting)
                     || !craftMatrix.getName().equals("container.crafting"))
