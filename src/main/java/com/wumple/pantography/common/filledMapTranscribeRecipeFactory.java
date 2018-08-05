@@ -2,21 +2,16 @@ package com.wumple.pantography.common;
 
 import javax.annotation.Nonnull;
 
-import com.google.common.collect.HashMultiset;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Multisets;
 import com.google.gson.JsonObject;
 
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.ItemMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.MapData;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.crafting.IRecipeFactory;
 import net.minecraftforge.common.crafting.JsonContext;
@@ -29,7 +24,20 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
  */
 public class filledMapTranscribeRecipeFactory implements IRecipeFactory
 {
-
+    /**
+     * debug logging
+     * 
+     * @param msg
+     *            message to log
+     */
+    public static void log(final String msg)
+    {
+        if (ModConfig.zdebugging.debug)
+        {
+            Pantography.logger.info(msg);
+        }
+    }
+    
     /**
      * hook for JSON to be able to use this recipe
      * 
@@ -55,321 +63,7 @@ public class filledMapTranscribeRecipeFactory implements IRecipeFactory
             super(group, result, recipe);
             // register for events so received onCrafting event can handle map transcription
             MinecraftForge.EVENT_BUS.register(this);
-        }
-
-        /**
-         * Magic number for width and height of map data - not a constant elsewhere
-         * 
-         * @see MapData
-         */
-        private static final int pixLength = 128;
-
-        /**
-         * debug logging
-         * 
-         * @param msg
-         *            message to log
-         */
-        protected void log(final String msg)
-        {
-            if (ModConfig.zdebugging.debug)
-            {
-                Pantography.logger.info(msg);
-            }
-        }
-
-        /**
-         * given a pixel coordinate i,j and scale, find the most common pixel within range
-         * 
-         * @param mapData
-         *            map's pixels to search
-         * @param i
-         *            pixel coordinate x
-         * @param j
-         *            pixel coordinate y
-         * @param scaleDiff
-         *            scale difference of i,j
-         * @return most common pixel color within (i,j) - [i+size,j+size]
-         */
-        protected byte getMapPixel(final MapData mapData, final int i, final int j, final int scaleDiff)
-        {
-
-            // case: multiple pixels being scaled down to one, choose the most
-            // common pixel color like maps do normally
-            if (scaleDiff < 0)
-            {
-                final int width = 1 << (scaleDiff * -1);
-                final HashMultiset<Integer> hashmultiset = HashMultiset.create();
-                for (int x = i; x < i + width; x++)
-                {
-                    for (int y = j; y < j + width; y++)
-                    {
-                        if ((x >= 0) && (x < pixLength) && (y >= 0) && (y < pixLength))
-                            if ((i >= 0) && (i < pixLength) && (j >= 0) && (j < pixLength))
-                            {
-                                final int index = y * pixLength + x;
-                                final byte color = mapData.colors[index];
-                                // don't add transparent pixels
-                                if (!isUnexploredColor(color))
-                                {
-                                    hashmultiset.add(new Integer(color));
-                                }
-                            }
-                    }
-                }
-
-                final Integer pixelValue = Iterables.getFirst(Multisets.copyHighestCountFirst(hashmultiset), 0);
-                return pixelValue.byteValue();
-            }
-
-            // MAYBETODO if scale > 1, blend between pixel values to avoid blockiness
-
-            // case: return one pixel for one or fewer pixels
-            if ((i >= 0) && (i < pixLength) && (j >= 0) && (j < pixLength))
-            {
-                final int index = j * pixLength + i;
-                return mapData.colors[index];
-            }
-
-            // case: out of range
-            return 0;
-        }
-
-        /**
-         * get map pixel color given world coord x,y in mapData
-         * 
-         * @param mapData
-         *            map's pixels to search
-         * @param x
-         *            world coord x
-         * @param z
-         *            world cord y
-         * @param scaleDiff
-         *            scale difference
-         * @return map pixel color for x,y or 0 if not in map
-         */
-        protected byte getPixelValueForWorldCoord(final MapData mapData, final int x, final int z, final int scaleDiff)
-        {
-            final int scale = 1 << mapData.scale;
-            final int size = pixLength * scale;
-
-            // world scale 0 .. size
-            final int wsx0 = x - mapData.xCenter + (size / 2);
-            final int wsz0 = z - mapData.zCenter + (size / 2);
-
-            // pixel scale 0 .. pixLength
-            final int psx0 = wsx0 / scale;
-            final int psz0 = wsz0 / scale;
-
-            // get pixel value if coord within range
-            return getMapPixel(mapData, psx0, psz0, scaleDiff);
-        }
-
-        /**
-         * get rect representing a map's area
-         * 
-         * @param srcMapData
-         *            map
-         * @return Rect of map area in world coords
-         */
-        protected Rect getMapRect(final MapData srcMapData)
-        {
-            final int srcScale = 1 << srcMapData.scale;
-            final int srcSize = pixLength * srcScale;
-            final Rect r2 = new Rect();
-            r2.x1 = srcMapData.xCenter - srcSize / 2;
-            r2.z1 = srcMapData.zCenter - srcSize / 2;
-            r2.x2 = srcMapData.xCenter + srcSize / 2;
-            r2.z2 = srcMapData.zCenter + srcSize / 2;
-
-            return r2;
-        }
-
-        /**
-         * get intersection in of two map datas
-         * 
-         * @param destMapData
-         *            map 1
-         * @param srcMapData
-         *            map 2
-         * @return Rect of intersection in world coords, or null if no intersection
-         */
-        protected Rect getMapDataIntersection(final MapData destMapData, final MapData srcMapData)
-        {
-            if (srcMapData == null || destMapData == null)
-            {
-                return null;
-            }
-
-            // if maps are for different dimensions, nothing to do
-            if (srcMapData.dimension != destMapData.dimension)
-            {
-                return null;
-            }
-
-            // calculate map corners
-            final Rect r1 = getMapRect(destMapData);
-            final Rect r2 = getMapRect(srcMapData);
-
-            log("destMap area: " + r1.str());
-            log("srcMap area:  " + r2.str());
-
-            // find intersection
-            Rect intersection = Rect.intersection(r1, r2);
-            log("intersection: " + ((intersection == null) ? "none" : intersection.str()));
-            return intersection;
-        }
-
-        /**
-         * get MapData for given ItemStack
-         * 
-         * @param dest
-         *            Itemstack to get MapData from
-         * @param worldIn
-         *            current world
-         * @return MapData for a dest ItemStack, or null if not correct
-         */
-        protected MapData getMapData(final ItemStack dest, final World worldIn)
-        {
-            if (dest != null && dest != ItemStack.EMPTY && dest.getItem() instanceof ItemMap)
-            {
-                return Items.FILLED_MAP.getMapData(dest, worldIn);
-            }
-
-            return null;
-        }
-
-        /**
-         * can we transcribe any map data from src to dest?
-         * 
-         * @param dest
-         *            destination map
-         * @param src
-         *            source map
-         * @param worldIn
-         *            current world
-         * @return true if any data would be copied, false if not
-         */
-        public Boolean canTranscribeMap(final ItemStack dest, final ItemStack src, final World worldIn)
-        {
-            final MapData destMapData = getMapData(dest, worldIn);
-            final MapData srcMapData = getMapData(src, worldIn);
-
-            // find intersection
-            final Rect ri = getMapDataIntersection(destMapData, srcMapData);
-
-            return (ri != null);
-        }
-
-        /**
-         * is color an unexplored map block color?
-         * 
-         * @param color
-         *            to check
-         * @return true if color represents unexplored color, false if not
-         */
-        protected boolean isUnexploredColor(final byte color)
-        {
-            // this is calc to detemine unexplored pixels from
-            // net/minecraft/client/gui/MapItemRenderer.java
-            return (color / 4 == 0);
-        }
-
-        /**
-         * copy the map data from src to dest if possible
-         * 
-         * @param dest
-         *            destination map
-         * @param src
-         *            source map
-         * @param worldIn
-         *            current world
-         */
-        public void transcribeMap(final ItemStack dest, final ItemStack src, final World worldIn)
-        {
-            log("transcribeMap begin");
-
-            final MapData destMapData = getMapData(dest, worldIn);
-            final MapData srcMapData = getMapData(src, worldIn);
-
-            // find intersection
-            final Rect ri = getMapDataIntersection(destMapData, srcMapData);
-
-            if (ri == null)
-            {
-                log("transcribeMap end - no intersection");
-                return;
-            }
-
-            log("intersection area: " + ri.str());
-
-            // now convert world space intersection into dest pixel space
-            // dest pixel space is byte array of 128x128 with world xCenter and
-            // zCenter in middle
-            final int destScale = 1 << destMapData.scale;
-            final int destSize = pixLength * destScale;
-            final Rect dp = new Rect();
-            dp.x1 = (ri.x1 - destMapData.xCenter + destSize / 2) / destScale;
-            dp.z1 = (ri.z1 - destMapData.zCenter + destSize / 2) / destScale;
-            dp.x2 = (ri.x2 - destMapData.xCenter + destSize / 2) / destScale;
-            dp.z2 = (ri.z2 - destMapData.zCenter + destSize / 2) / destScale;
-
-            final int dxsize = dp.x2 - dp.x1;
-            final int dzsize = dp.z2 - dp.z1;
-            final int scaleDiff = srcMapData.scale - destMapData.scale;
-
-            log("destPixelSpace:   " + dp.str());
-            log("size: (" + dxsize + "," + dzsize + ") scaleDiff " + scaleDiff);
-            long pixelsEvaluated = 0;
-            long pixelsCopied = 0;
-
-            // walk dest pixels, copying appropriate pixel from src for each one
-            for (int i = 0; i < dxsize; i++)
-            {
-                for (int j = 0; j < dzsize; j++)
-                {
-
-                    // calculate world coord for pixel
-                    // destScale = destSize / pixLength
-                    final int wx = destMapData.xCenter - (destSize / 2) + ((dp.x1 + i) * destScale);
-                    final int wz = destMapData.zCenter - (destSize / 2) + ((dp.z1 + j) * destScale);
-
-                    // calculate destination index for pixel
-                    final int dz = (dp.z1 + j);
-                    final int dx = (dp.x1 + i);
-                    final int index = dz * pixLength + dx;
-
-                    if ((index >= 0) && (index < pixLength * pixLength))
-                    {
-                        pixelsEvaluated++;
-                        // only write to blank pixels in dest
-                        if (isUnexploredColor(destMapData.colors[index]))
-                        {
-                            byte newColor = this.getPixelValueForWorldCoord(srcMapData, wx, wz, scaleDiff);
-                            if (!isUnexploredColor(newColor))
-                            {
-                                destMapData.colors[index] = newColor;
-                                destMapData.updateMapData(dx, dz);
-                                pixelsCopied++;
-                            }
-                        }
-                    }
-                    /*
-                     * // debug else { this.log("OOB2: ij ("+i+"," +j+") w ("+wx+","+wz+") index "+index); destMapData.markDirty(); return; }
-                     */
-                }
-            }
-
-            // mark map dirty so resent to clients and persisted
-            if (pixelsCopied > 0)
-            {
-                destMapData.markDirty();
-            }
-
-            log("pixelsEvaluated: " + pixelsEvaluated);
-            log("pixelsCopied: " + pixelsCopied);
-            log("transcribeMap end - done");
-        }
+        }   
 
         /**
          * return the items involved in this recipe, or null if not present
@@ -430,7 +124,7 @@ public class filledMapTranscribeRecipeFactory implements IRecipeFactory
             boolean canTranscribe = false;
             if (mapsValid)
             {
-                canTranscribe = canTranscribeMap(results.destItemStack(), results.srcItemStack(), worldIn);
+                canTranscribe = MapTranscription.canTranscribeMap(results.destItemStack(), results.srcItemStack(), worldIn);
             }
             boolean doesMatch = mapsValid && ((!ModConfig.matchOnlyIntersectingMaps) || canTranscribe);
 
@@ -525,7 +219,7 @@ public class filledMapTranscribeRecipeFactory implements IRecipeFactory
                 // only transcribe on server, and let it send updated map data to client
                 if (!event.player.world.isRemote)
                 {
-                    this.transcribeMap(event.crafting, results.srcItemStack(), event.player.world);
+                    MapTranscription.transcribeMap(event.crafting, results.srcItemStack(), event.player.world);
                 }
 
                 for (int i = craftMatrix.getSizeInventory() - 1; i >= 0; i--)
