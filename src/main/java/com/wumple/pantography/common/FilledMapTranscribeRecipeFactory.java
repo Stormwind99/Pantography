@@ -3,6 +3,7 @@ package com.wumple.pantography.common;
 import javax.annotation.Nonnull;
 
 import com.google.gson.JsonObject;
+import com.wumple.util.map.MapTranscription;
 
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
@@ -22,7 +23,7 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 /**
  * RecipeFactory to copy map data from one filled map into another filled map
  */
-public class filledMapTranscribeRecipeFactory implements IRecipeFactory
+public class FilledMapTranscribeRecipeFactory implements IRecipeFactory
 {
     /**
      * debug logging
@@ -49,16 +50,16 @@ public class filledMapTranscribeRecipeFactory implements IRecipeFactory
     {
         ShapelessOreRecipe recipe = ShapelessOreRecipe.factory(context, json);
 
-        return new filledMapTranscribeRecipe(new ResourceLocation(Reference.MOD_ID, "filled_map_transcribe_crafting"), recipe.getRecipeOutput());
+        return new FilledMapTranscribeRecipe(new ResourceLocation(Reference.MOD_ID, "filled_map_transcribe_crafting"), recipe.getRecipeOutput());
     }
 
     /**
      * The actual recipe to copy map data from one filled map into another filled map
      */
-    public static class filledMapTranscribeRecipe extends ShapelessOreRecipe
+    public static class FilledMapTranscribeRecipe extends ShapelessOreRecipe
     {
 
-        public filledMapTranscribeRecipe(ResourceLocation group, @Nonnull ItemStack result, Object... recipe)
+        public FilledMapTranscribeRecipe(ResourceLocation group, @Nonnull ItemStack result, Object... recipe)
         {
             super(group, result, recipe);
             // register for events so received onCrafting event can handle map transcription
@@ -85,11 +86,11 @@ public class filledMapTranscribeRecipeFactory implements IRecipeFactory
                 {
                     if (itemstack1.getItem() == Items.FILLED_MAP)
                     {
-                        if (destItemStack == ItemStack.EMPTY)
+                        if (destItemStack.isEmpty())
                         {
                             destItemStack = itemstack1;
                         }
-                        else if (srcItemStack == ItemStack.EMPTY)
+                        else if (srcItemStack.isEmpty())
                         {
                             srcItemStack = itemstack1;
                         }
@@ -118,8 +119,8 @@ public class filledMapTranscribeRecipeFactory implements IRecipeFactory
             // canTranscribeMap(results.destItemStack(), results.srcItemStack(), worldIn);
 
             boolean mapsValid = (results != null) && 
-                    (results.srcItemStack() != ItemStack.EMPTY) && 
-                    (results.destItemStack() != ItemStack.EMPTY);
+                    (!results.srcItemStack().isEmpty()) && 
+                    (!results.destItemStack().isEmpty());
             
             boolean canTranscribe = false;
             if (mapsValid)
@@ -139,7 +140,7 @@ public class filledMapTranscribeRecipeFactory implements IRecipeFactory
         {
             final CraftingSearchResults results = this.getStuff(inv);
 
-            if (results != null && results.srcItemStack() != ItemStack.EMPTY && results.destItemStack() != ItemStack.EMPTY)
+            if (results != null && !results.srcItemStack().isEmpty() && !results.destItemStack().isEmpty())
             {
                 ItemStack itemstack2 = new ItemStack(Items.FILLED_MAP, 1, results.destItemStack().getMetadata());
 
