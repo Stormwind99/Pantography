@@ -1,12 +1,13 @@
 {
   "homepage": "https://github.com/Stormwind99/Pantography",
   "promos": {
-    "1.12.2-latest": "1.3.0",
-    "1.12.2-recommended": "1.3.0",
+    "1.12.2-latest": "1.4.1",
+    "1.12.2-recommended": "1.4.1",
     "1.7.10-latest": "1.0.1",
     "1.7.10-recommended": "1.0.1"
   },
   "1.12.2": {
+    "1.4.1": "Library update",
     "1.4.0": "Moved map copy to WumpleUtil for re-use.",
     "1.3.0": "Don't copy empty pixels (more efficient).  Can't craft/copy map if the ingredient maps have no interection (can be disabled in config with matchOnlyIntersectingMaps=false).  Added debug logging (can be enabled in config).",
     "1.2.0": "Signing jar",
