@@ -1,8 +1,11 @@
-package com.wumple.pantography.common;
+package com.wumple.pantography;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.wumple.pantography.capability.PantographCap;
+import com.wumple.pantography.config.ConfigHandler;
+import com.wumple.pantography.config.ModConfig;
 import com.wumple.util.map.MapUtil;
 import com.wumple.util.mod.ModBase;
 
@@ -28,6 +31,8 @@ public class Pantography extends ModBase
     public void preInit(FMLPreInitializationEvent event)
     {
         super.preInit(event);
+        ConfigHandler.init();
+        PantographCap.register();
         MapUtil.setLogger((msg) -> { if (ModConfig.zdebugging.debug) { Pantography.logger.info(msg); } });
     }
     
@@ -36,6 +41,7 @@ public class Pantography extends ModBase
     public void init(FMLInitializationEvent event)
     {
         super.init(event);
+        ObjectHolder.RegistrationHandler.registerGuiHandlers();
     }
     
     @EventHandler

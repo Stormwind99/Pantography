@@ -1,4 +1,4 @@
-package com.wumple.pantography.common;
+package com.wumple.pantography.recipe;
 
 import net.minecraft.item.ItemStack;
 

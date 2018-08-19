@@ -1,4 +1,9 @@
-package com.wumple.pantography.common;
+package com.wumple.pantography.config;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import com.wumple.pantography.Reference;
 
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.Config.Name;
@@ -14,6 +19,17 @@ public class ModConfig
     @Name("Match only intersecting maps")
     @Config.Comment("Crafting table will only allow combining maps if maps have an intersection") 
     public static boolean matchOnlyIntersectingMaps = true;
+   
+    public static class ItemsAndBlocks
+    {
+        @Name("Pantographs")
+        @Config.Comment("Things that are pantographs have a non-zero value")
+        public Map<String, Integer> pantographs = new HashMap<String, Integer>();
+    }
+
+    @Name("Items and Blocks")
+    @Config.Comment("Configure items and blocks for mod") 
+    public static ItemsAndBlocks itemsAndBlocks = new ItemsAndBlocks();
     
     @Name("Debugging")
     @Config.Comment("Debugging options")

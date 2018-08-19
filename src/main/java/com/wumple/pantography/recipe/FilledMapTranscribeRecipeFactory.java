@@ -1,8 +1,11 @@
-package com.wumple.pantography.common;
+package com.wumple.pantography.recipe;
 
 import javax.annotation.Nonnull;
 
 import com.google.gson.JsonObject;
+import com.wumple.pantography.Pantography;
+import com.wumple.pantography.Reference;
+import com.wumple.pantography.config.ModConfig;
 import com.wumple.util.map.MapTranscription;
 
 import net.minecraft.init.Items;
