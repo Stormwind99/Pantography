@@ -229,7 +229,7 @@ public class PantographCap extends ThingCap<IThing> implements IPantographCap, I
     public String getName()
     {
         IWorldNameable i = owner.as(IWorldNameable.class);
-        return (i != null) ? i.getName() : "";
+        return (i != null) ? i.getName() : "container.pantography.pantogragh";
     }
 
     /**

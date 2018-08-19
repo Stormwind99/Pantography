@@ -11,9 +11,7 @@ public class SlotInput extends SlotBase
 {
     public SlotInput(Container containerIn, EntityPlayer playerIn, IInventory inventory, int slotIndex, int xDisplayPosition, int yDisplayPosition)
     {
-        super(inventory, slotIndex, xDisplayPosition, yDisplayPosition);
-        container = containerIn;
-        player = playerIn;
+        super(containerIn, playerIn, inventory, slotIndex, xDisplayPosition, yDisplayPosition);
     }
     
     /**

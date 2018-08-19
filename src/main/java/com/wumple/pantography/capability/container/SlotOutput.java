@@ -11,9 +11,7 @@ public class SlotOutput extends SlotBase
 {
     public SlotOutput(Container containerIn, EntityPlayer playerIn, IInventory inventory, int slotIndex, int xDisplayPosition, int yDisplayPosition)
     {
-        super(inventory, slotIndex, xDisplayPosition, yDisplayPosition);
-        container = containerIn;
-        player = playerIn;
+        super(containerIn, playerIn, inventory, slotIndex, xDisplayPosition, yDisplayPosition);
     }
     
     @Override
@@ -27,6 +25,9 @@ public class SlotOutput extends SlotBase
 
         return super.onTake(thePlayer, stack);
     }
+    
+    // See hack in SlotInput:
+    // HACK: force send SlotOutput when any SlotInput changes, so that update caused by SlotInput update will get sent to client
     
     /*
     private int amountCrafted;

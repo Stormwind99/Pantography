@@ -11,14 +11,14 @@ import net.minecraft.util.ResourceLocation;
 public class GuiPantograph extends GuiContainer
 {
     private static final ResourceLocation guiTextures = new ResourceLocation("pantography", "textures/gui/pantograph.png");
-    private IPantographCap tileOwner;
+    private IPantographCap owner;
 
     //private Slot hoveredSlot;
 
-    public GuiPantograph (InventoryPlayer inventory, IPantographCap tileEntity)
+    public GuiPantograph (InventoryPlayer inventory, IPantographCap ownerIn)
     {
-        super(new ContainerPantograph(inventory, tileEntity));
-        tileOwner = tileEntity;
+        super(new ContainerPantograph(inventory, ownerIn));
+        owner = ownerIn;
     }
 
     @Override
@@ -33,7 +33,7 @@ public class GuiPantograph extends GuiContainer
     {
     	GlStateManager.pushAttrib();
 
-        String name = this.tileOwner.hasCustomName() ? this.tileOwner.getName() : I18n.format(this.tileOwner.getName(), new Object[0]);
+        String name = this.owner.hasCustomName() ? this.owner.getName() : I18n.format(this.owner.getName(), new Object[0]);
         this.fontRenderer.drawString(name, this.xSize / 2 - this.fontRenderer.getStringWidth(name) / 2, 6, 4210752);
         this.fontRenderer.drawString(I18n.format("container.inventory", new Object[0]), 8, this.ySize - 96 + 2, 4210752);
 

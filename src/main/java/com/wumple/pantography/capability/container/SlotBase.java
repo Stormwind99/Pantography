@@ -12,13 +12,19 @@ import net.minecraft.network.play.server.SPacketSetSlot;
 
 public class SlotBase extends Slot
 {
-
     protected Container container;
     protected EntityPlayer player;
 
     public SlotBase(IInventory inventoryIn, int index, int xPosition, int yPosition)
     {
         super(inventoryIn, index, xPosition, yPosition);
+    }
+    
+    public SlotBase(Container containerIn, EntityPlayer playerIn, IInventory inventoryIn, int index, int xPosition, int yPosition)
+    {
+        super(inventoryIn, index, xPosition, yPosition);
+        container = containerIn;
+        player = playerIn;
     }
 
     @Override

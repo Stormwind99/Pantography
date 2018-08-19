@@ -42,12 +42,12 @@ public class ContainerPantograph extends Container
         for (int y = 0; y < 3; y++)
         {
             for (int x = 0; x < 3; x++)
-                ourSlots.add(addSlotToContainer(new SlotInput(this, inventory.player, cap, x + y * 3, 30 + x * 18, 17 + y * 18)));
+                ourSlots.add(addSlotToContainer(new SlotInput(this, inventory.player, cap, x + y * 3, 18 + x * 18, 17 + y * 18)));
         }
 
-        targetSlot = addSlotToContainer(new SlotInput(this, inventory.player, cap, 9, 123, 34) );
+        targetSlot = addSlotToContainer(new SlotInput(this, inventory.player, cap, 9, 123-54+12-1, 34+1) );
         
-        outputSlot = addSlotToContainer(new SlotOutput(this, inventory.player, cap, 10, 123+(18*2), 34));
+        outputSlot = addSlotToContainer(new SlotOutput(this, inventory.player, cap, 10, 123+14+1, 34+1));
 
         playerSlots = new ArrayList<Slot>();
         for (int i = 0; i < 3; i++)
