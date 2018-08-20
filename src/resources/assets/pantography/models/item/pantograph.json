@@ -1,0 +1,41 @@
+{
+    "parent": "pantography:block/pantograph",
+    	"display": {
+		"gui": {
+			"rotation": [ 90, 0, 0 ],
+			"translation": [ 0, 0, 0 ],
+			"scale": [ 0.75, 0.75, 0.75 ]
+		},
+		"ground": {
+			"rotation": [ 0, 0, 0 ],
+			"translation": [ 0, 0, 0 ],
+			"scale": [ 0.75, 0.75, 0.75 ]
+		},
+		"fixed": {
+			"rotation": [ -90, 180, 0 ],
+			"translation": [ 0, 0, -7 ],
+			"scale": [ 1, 1, 1 ]
+		},
+	        "thirdperson_righthand": {
+			"rotation": [ 0, 0, -90 ],
+			"translation": [ 8, 0, 0 ],
+			"scale": [ 0.75, 0.75, 0.75 ]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [ 0, 0, -90 ],
+			"translation": [ 8, 0, 0 ],
+			"scale": [ 0.75, 0.75, 0.75 ]
+		},
+		"firstperson_righthand": {
+			"rotation": [ 0, 0, -90 ],
+			"translation": [ 8, 0, 0 ],
+			"scale": [ 0.75, 0.75, 0.75 ]
+		},
+		"firstperson_lefthand": {
+			"rotation": [ 0, 0, -90 ],
+			"translation": [ 8, 0, 0 ],
+			"scale": [ 0.75, 0.75, 0.75 ]
+		}
+	}
+}
+

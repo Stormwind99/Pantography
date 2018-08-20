@@ -1,16 +1,25 @@
 package com.wumple.pantography.pantograph;
 
+import javax.annotation.Nullable;
+
 import com.wumple.util.misc.RegistrationHelpers;
 import com.wumple.util.nameable.NameableBlockContainer;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockFaceShape;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Mirror;
+import net.minecraft.util.Rotation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -21,8 +30,10 @@ public class BlockPantograph extends NameableBlockContainer
 {
     // ----------------------------------------------------------------------
     // BlockPantograph
-    
-    static public final String ID = "pantography:pantograph";
+
+    public static final String ID = "pantography:pantograph";
+    public static final AxisAlignedBB BASE_AABB = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.1875D, 1.0D);
+    public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 
     public BlockPantograph()
     {
@@ -36,6 +47,7 @@ public class BlockPantograph extends NameableBlockContainer
         setHardness(1.5f);
         setResistance(5f);
         setCreativeTab(CreativeTabs.MISC);
+        this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
 
         RegistrationHelpers.nameHelper(this, ID);
     }
@@ -70,6 +82,19 @@ public class BlockPantograph extends NameableBlockContainer
         return BlockRenderLayer.CUTOUT_MIPPED;
     }
 
+    @Override
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
+    {
+        return BASE_AABB;
+    }
+
+    @Nullable
+    @Override
+    public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos)
+    {
+        return BASE_AABB;
+    }
+
     /**
      * Get the geometry of the queried face at the given position and state. This is used to decide whether things like buttons are allowed to be placed on the face, or how glass
      * panes connect to the face, among other things.
@@ -102,52 +127,53 @@ public class BlockPantograph extends NameableBlockContainer
         return true;
     }
 
-    /**
-     * @deprecated call via {@link IBlockState#hasComparatorInputOverride()} whenever possible. Implementing/overriding is fine.
-     */
-    /*
-    public boolean hasComparatorInputOverride(IBlockState state)
-    {
-        return true;
-    }
-    */
-
-    /**
-     * @deprecated call via {@link IBlockState#getComparatorInputOverride(World,BlockPos)} whenever possible. Implementing/overriding is fine.
-     */
-    /*
-    public int getComparatorInputOverride(IBlockState blockState, World worldIn, BlockPos pos)
-    {
-        return ((Integer) blockState.getValue(CompostBinCap.LEVEL)).intValue();
-    }
-    */
-
-    /**
-     * Convert the given metadata into a BlockState for this Block
-     */
-    /*
-    public IBlockState getStateFromMeta(int meta)
-    {
-        return this.getDefaultState().withProperty(CompostBinCap.LEVEL, Integer.valueOf(meta));
-    }
-    */
-
-    /**
-     * Convert the BlockState into the correct metadata value
-     */
-    /*
-    public int getMetaFromState(IBlockState state)
-    {
-        return ((Integer) state.getValue(CompostBinCap.LEVEL)).intValue();
-    }
-    */
-
-    /*
+    @Override
     protected BlockStateContainer createBlockState()
     {
-        return new BlockStateContainer(this, new IProperty[] { CompostBinCap.LEVEL });
+        return new BlockStateContainer(this, new IProperty[] { FACING });
     }
-    */
+
+    @Override
+    public IBlockState getStateFromMeta(int meta)
+    {
+        return getDefaultState().withProperty(FACING, EnumFacing.byHorizontalIndex(meta));
+    }
+
+    @Override
+    public int getMetaFromState(IBlockState state)
+    {
+        EnumFacing facing = (EnumFacing) state.getValue(FACING);
+        return facing.getHorizontalIndex();
+    }
+
+    /**
+     * Returns the blockstate with the given rotation from the passed blockstate. If inapplicable, returns the passed blockstate.
+     * 
+     * @deprecated call via {@link IBlockState#withRotation(Rotation)} whenever possible. Implementing/overriding is fine.
+     */
+    public IBlockState withRotation(IBlockState state, Rotation rot)
+    {
+        return state.withProperty(FACING, rot.rotate((EnumFacing) state.getValue(FACING)));
+    }
+
+    /**
+     * Returns the blockstate with the given mirror of the passed blockstate. If inapplicable, returns the passed blockstate.
+     * 
+     * @deprecated call via {@link IBlockState#withMirror(Mirror)} whenever possible. Implementing/overriding is fine.
+     */
+    public IBlockState withMirror(IBlockState state, Mirror mirrorIn)
+    {
+        return state.withRotation(mirrorIn.toRotation((EnumFacing) state.getValue(FACING)));
+    }
+
+    /**
+     * Called by ItemBlocks just before a block is actually set in the world, to allow for adjustments to the IBlockstate
+     */
+    public IBlockState getStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY,
+            float hitZ, int meta, EntityLivingBase placer)
+    {
+        return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
+    }
 
     // ----------------------------------------------------------------------
     // BlockContainer

@@ -1,0 +1,24 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "pantography:pantograph",
+    "transform": "forge:default-block"
+  },
+  "variants": {
+      "normal": {
+        "y": 270
+        },
+      "facing=east": {
+        "y": 270
+      },
+      "facing=south": {
+        "y": 0
+      },
+      "facing=west": {
+        "y": 90
+      },
+      "facing=north": {
+        "y": 180
+      }
+  }
+}

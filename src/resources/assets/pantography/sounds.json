@@ -1,0 +1,9 @@
+{
+  "pantograph_use": {
+    "category": "block",
+    "subtitle": "pantography.subtitle.pantograph_use",
+    "sounds": [
+      "pantography:pantograph_use"
+    ]
+  }
+}

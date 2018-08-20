@@ -12,12 +12,7 @@ public class ConfigHandler
 	
 	public static void init()
 	{
-	    //TODO
-	    //items.addDefaultProperty(BlockPantograph.ID, PantographCap.DEFAULT_SLOTS);
-	    pantographs.addDefaultProperty("pantography:pantograph", 9);
-	    
-	    // TEMP
-	    pantographs.addDefaultProperty("minecraft:flower_pot", 9);
+	    pantographs.addDefaultProperty("pantography:pantograph", 1);
 	    
 	    ConfigManager.sync(Reference.MOD_ID, Config.Type.INSTANCE);
 	}	
