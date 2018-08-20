@@ -7,6 +7,7 @@ import com.wumple.util.misc.RegistrationHelpers;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.util.SoundEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -25,6 +26,9 @@ public class ObjectHolder
 
     // @GameRegistry.ObjectHolder("pantography:pantograph_item")
     public static /* final */ Item pantograph_item = null;
+    
+    // @ObjectHolder("pantography:pantograph_use")
+    public static SoundEvent pantograph_use = null;
     
     @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
     public static class RegistrationHandler
@@ -68,5 +72,14 @@ public class ObjectHolder
         {
             NetworkRegistry.INSTANCE.registerGuiHandler(Pantography.instance, new GuiHandlerPantograph());
         }
+        
+        @SubscribeEvent
+        public static void registerSoundEvents(RegistryEvent.Register<SoundEvent> event)
+        {
+            final IForgeRegistry<SoundEvent> registry = event.getRegistry();
+
+            pantograph_use = RegistrationHelpers.registerSound(registry, "pantography:pantograph_use");
+        }
+
     }
 }

@@ -3,6 +3,7 @@ package com.wumple.pantography.capability;
 import java.util.List;
 import java.util.function.BiConsumer;
 
+import com.wumple.pantography.ObjectHolder;
 import com.wumple.pantography.Pantography;
 import com.wumple.pantography.Reference;
 import com.wumple.pantography.capability.container.ContainerPantograph;
@@ -31,6 +32,7 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
@@ -287,6 +289,18 @@ public class PantographCap extends ThingCap<IThing> implements IPantographCap, I
     
     protected void updateInternalState(int index)
     { }
+    
+    void playCraftingSound(BlockPos pos, World world)
+    {
+        int i = pos.getX();
+        int j = pos.getY();
+        int k = pos.getZ();
+    
+        double d1 = (double) i + 0.5D;
+        double d2 = (double) k + 0.5D;
+        world.playSound((EntityPlayer) null, d1, (double) j + 0.5D, d2, ObjectHolder.pantograph_use,
+                SoundCategory.BLOCKS, 0.5F, world.rand.nextFloat() * 0.1F + 0.9F);
+    }
 
     /**
      * Removes up to a specified number of items from an inventory slot and returns them in a new stack.
@@ -297,6 +311,10 @@ public class PantographCap extends ThingCap<IThing> implements IPantographCap, I
         ItemStack itemstack = ItemStackHelper.getAndSplit(this.itemStacks, index, count);
         updateInternalState(index);
         this.onCraftMatrixChanged(this, null);
+        if (index == OUTPUT_SLOT)
+        {
+            playCraftingSound(owner.getPos(), owner.getWorld());
+        }
         return itemstack;
     }
     
