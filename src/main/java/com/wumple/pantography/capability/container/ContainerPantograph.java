@@ -73,17 +73,7 @@ public class ContainerPantograph extends Container
     public void detectAndSendChanges()
     {
         super.detectAndSendChanges();
-        //owner.detectAndSendChanges(this, listeners);
     }
-
-    /*
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void updateProgressBar(int id, int value)
-    {
-        owner.updateProgressBar(id, value);
-    }
-    */
 
     @Override
     public boolean canInteractWith(EntityPlayer player)

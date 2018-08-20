@@ -17,8 +17,6 @@ public class SlotOutput extends SlotBase
     @Override
     public ItemStack onTake(EntityPlayer thePlayer, ItemStack stack)
     {
-        // FMLCommonHandler.instance().firePlayerCraftingEvent(thePlayer, stack, inputInventory);
-
         onCrafting(stack);
       
         inventory.decrStackSize(PantographCap.TARGET_SLOT, 1);

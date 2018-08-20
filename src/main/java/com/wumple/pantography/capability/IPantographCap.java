@@ -34,15 +34,10 @@ public interface IPantographCap extends IInventory, INBTSerializable<NBTBase>, I
     default String getName() { return "none"; }
     
     boolean isActive();
-    //int getDecomposeTimeRemainingScaled(int size);
-    //void updateBlockState();
     
     void onBlockBreak(World worldIn, BlockPos pos);
 
     void onRightBlockClicked(PlayerInteractEvent.RightClickBlock event);
-    
-    //void detectAndSendChanges(Container containerIn, List<IContainerListener> listeners);
-    //void updateProgressBar(int id, int value);
     
     IItemHandlerModifiable handler();
     
