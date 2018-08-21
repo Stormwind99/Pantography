@@ -15,8 +15,6 @@ Two methods of use are available:
 
 ## Example uses
 
-Example uses:
-
 * Make a bunch of detailed scale 0 maps, then copy all those maps into a scale 4 map to make a single overview map without duplicating exploration.
 * Make and fill a scale 4 map, decide where to explore in detail, and copy the scale 4 Map data into a scale 1 map to start with a general picture of the area and explore to fill in detail.
 * Using [Bibliocraft's Atlas](http://www.bibliocraftmod.com/wiki/atlas/), create an atlas of scale 0 maps, then copy the map data to a set of scale 4 maps to make an overview atlas.
