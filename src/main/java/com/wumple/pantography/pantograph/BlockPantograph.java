@@ -2,23 +2,18 @@ package com.wumple.pantography.pantograph;
 
 import javax.annotation.Nullable;
 
+import com.wumple.util.block.HorizontalOrientableBlock;
 import com.wumple.util.misc.RegistrationHelpers;
-import com.wumple.util.nameable.NameableBlockContainer;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockFaceShape;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Mirror;
-import net.minecraft.util.Rotation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -26,14 +21,13 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockPantograph extends NameableBlockContainer
+public class BlockPantograph extends HorizontalOrientableBlock
 {
     // ----------------------------------------------------------------------
     // BlockPantograph
 
     public static final String ID = "pantography:pantograph";
     public static final AxisAlignedBB BASE_AABB = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.1875D, 1.0D);
-    public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 
     public BlockPantograph()
     {
@@ -47,10 +41,15 @@ public class BlockPantograph extends NameableBlockContainer
         setHardness(1.5f);
         setResistance(5f);
         setCreativeTab(CreativeTabs.MISC);
-        this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
 
         RegistrationHelpers.nameHelper(this, ID);
     }
+    
+    public Block getThisBlock()
+    { return this; }
+    
+    public void setMyDefaultState(IBlockState state)
+    { setDefaultState(state); }
 
     // ----------------------------------------------------------------------
     // Block
@@ -117,64 +116,6 @@ public class BlockPantograph extends NameableBlockContainer
         }
     }
 
-    // --- Block state ---
-
-    // from
-    // http://www.minecraftforge.net/forum/topic/62067-solved-itickable-and-tes-not-ticking/
-    @Override
-    public boolean hasTileEntity(IBlockState state)
-    {
-        return true;
-    }
-
-    @Override
-    protected BlockStateContainer createBlockState()
-    {
-        return new BlockStateContainer(this, new IProperty[] { FACING });
-    }
-
-    @Override
-    public IBlockState getStateFromMeta(int meta)
-    {
-        return getDefaultState().withProperty(FACING, EnumFacing.byHorizontalIndex(meta));
-    }
-
-    @Override
-    public int getMetaFromState(IBlockState state)
-    {
-        EnumFacing facing = (EnumFacing) state.getValue(FACING);
-        return facing.getHorizontalIndex();
-    }
-
-    /**
-     * Returns the blockstate with the given rotation from the passed blockstate. If inapplicable, returns the passed blockstate.
-     * 
-     * @deprecated call via {@link IBlockState#withRotation(Rotation)} whenever possible. Implementing/overriding is fine.
-     */
-    public IBlockState withRotation(IBlockState state, Rotation rot)
-    {
-        return state.withProperty(FACING, rot.rotate((EnumFacing) state.getValue(FACING)));
-    }
-
-    /**
-     * Returns the blockstate with the given mirror of the passed blockstate. If inapplicable, returns the passed blockstate.
-     * 
-     * @deprecated call via {@link IBlockState#withMirror(Mirror)} whenever possible. Implementing/overriding is fine.
-     */
-    public IBlockState withMirror(IBlockState state, Mirror mirrorIn)
-    {
-        return state.withRotation(mirrorIn.toRotation((EnumFacing) state.getValue(FACING)));
-    }
-
-    /**
-     * Called by ItemBlocks just before a block is actually set in the world, to allow for adjustments to the IBlockstate
-     */
-    public IBlockState getStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY,
-            float hitZ, int meta, EntityLivingBase placer)
-    {
-        return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
-    }
-
     // ----------------------------------------------------------------------
     // BlockContainer
 
@@ -192,6 +133,14 @@ public class BlockPantograph extends NameableBlockContainer
     // ----------------------------------------------------------------------
     // ITileEntityProvider
 
+    // from
+    // http://www.minecraftforge.net/forum/topic/62067-solved-itickable-and-tes-not-ticking/
+    @Override
+    public boolean hasTileEntity(IBlockState state)
+    {
+        return true;
+    }
+    
     @Override
     public TileEntity createNewTileEntity(World world, int meta)
     {

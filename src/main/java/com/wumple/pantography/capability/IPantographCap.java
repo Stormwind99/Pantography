@@ -1,17 +1,14 @@
 package com.wumple.pantography.capability;
 
-import java.util.function.BiConsumer;
-
 import javax.annotation.Nullable;
 
-import com.wumple.util.adapter.IThing;
-import com.wumple.util.capability.thing.IThingCap;
+import com.wumple.pantography.capability.container.ContainerPantograph;
+import com.wumple.util.capability.targetcrafting.IContainerCraftingOwner;
 import com.wumple.util.container.capabilitylistener.CapabilityUtils;
-import com.wumple.util.tooltip.ITooltipProvider;
 
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -19,11 +16,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.items.IItemHandlerModifiable;
 
-public interface IPantographCap extends IInventory, INBTSerializable<NBTBase>, IThingCap<IThing>, ITooltipProvider
+public interface IPantographCap extends IContainerCraftingOwner
 {
     // The {@link Capability} instance
     @CapabilityInject(IPantographCap.class)
@@ -35,13 +29,10 @@ public interface IPantographCap extends IInventory, INBTSerializable<NBTBase>, I
     
     boolean isActive();
     
-    void onBlockBreak(World worldIn, BlockPos pos);
-
-    void onRightBlockClicked(PlayerInteractEvent.RightClickBlock event);
-    
-    IItemHandlerModifiable handler();
-    
-    void onCraftMatrixChanged(IInventory inventoryIn, BiConsumer<Integer, ItemStack> updater);
+    default public Container createContainer(InventoryPlayer inventory, EntityPlayer playerIn)
+    {
+        return new ContainerPantograph(inventory, this);
+    }
     
     static IPantographCap getCap(@Nullable ICapabilityProvider provider)
     {

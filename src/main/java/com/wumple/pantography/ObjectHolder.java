@@ -6,6 +6,7 @@ import com.wumple.pantography.pantograph.TileEntityPantograph;
 import com.wumple.util.misc.RegistrationHelpers;
 
 import net.minecraft.block.Block;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -16,6 +17,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.registries.IForgeRegistry;
 
 @GameRegistry.ObjectHolder("pantography")
@@ -35,7 +37,8 @@ public class ObjectHolder
     {
         public static class Ids
         {
-            protected final static String[] pantographs = { "pantographs" };
+            public static final String[] pantographs = { "pantographs" };
+            public static final String listAllMetalIngots = "listAllmetalingots";
         }
         
         @SubscribeEvent
@@ -44,7 +47,8 @@ public class ObjectHolder
             final IForgeRegistry<Item> registry = event.getRegistry();
 
             pantograph_item = RegistrationHelpers.registerItemBlockOre(registry, pantograph, Ids.pantographs);
-            
+
+            registerMoreOreNames();
             registerTileEntities();
         }
 
@@ -80,6 +84,11 @@ public class ObjectHolder
 
             pantograph_use = RegistrationHelpers.registerSound(registry, "pantography:pantograph_use");
         }
-
+        
+        public static void registerMoreOreNames()
+        {
+            OreDictionary.registerOre(Ids.listAllMetalIngots, Items.IRON_INGOT);
+            OreDictionary.registerOre(Ids.listAllMetalIngots, Items.GOLD_INGOT);
+        }
     }
 }
