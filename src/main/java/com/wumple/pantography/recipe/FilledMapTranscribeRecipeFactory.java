@@ -6,9 +6,10 @@ import com.google.gson.JsonObject;
 import com.wumple.pantography.Pantography;
 import com.wumple.pantography.Reference;
 import com.wumple.pantography.config.ModConfig;
+import com.wumple.util.map.MapCreation;
 import com.wumple.util.map.MapTranscription;
+import com.wumple.util.map.MapUtil;
 
-import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -87,7 +88,7 @@ public class FilledMapTranscribeRecipeFactory implements IRecipeFactory
 
                 if (!itemstack1.isEmpty())
                 {
-                    if (itemstack1.getItem() == Items.FILLED_MAP)
+                    if (MapUtil.isItemMap(itemstack1))
                     {
                         if (destItemStack.isEmpty())
                         {
@@ -145,19 +146,7 @@ public class FilledMapTranscribeRecipeFactory implements IRecipeFactory
 
             if (results != null && !results.srcItemStack().isEmpty() && !results.destItemStack().isEmpty())
             {
-                ItemStack itemstack2 = new ItemStack(Items.FILLED_MAP, 1, results.destItemStack().getMetadata());
-
-                if (results.destItemStack().hasDisplayName())
-                {
-                    itemstack2.setStackDisplayName(results.destItemStack().getDisplayName());
-                }
-
-                if (results.destItemStack().hasTagCompound())
-                {
-                    itemstack2.setTagCompound(results.destItemStack().getTagCompound());
-                }
-
-                return itemstack2;
+                return MapCreation.copyMap(results.destItemStack());
             }
             else
             {
