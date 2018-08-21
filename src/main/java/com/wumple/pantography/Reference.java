@@ -1,4 +1,4 @@
-package com.wumple.pantography.common;
+package com.wumple.pantography;
 
 public class Reference
 {
@@ -20,7 +20,7 @@ public class Reference
     public static final String MOD_NAME = "Pantography";
     public static final String BUILD = "99";
     public static final String MOD_VERSION = "9.9.9";
-    public static final String DEPENDENCIES = "required-after:wumpleutil@[2.11,)";
+    public static final String DEPENDENCIES = "required-after:wumpleutil@[2.12,)";
     public static final String UPDATEJSON = "update.json";
     public static final String FINGERPRINT = "";
     */
