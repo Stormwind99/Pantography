@@ -47,6 +47,10 @@ Pantograph block, with an example resulting filled map in a frame showing a scal
 
 Example of a pantograph map transcription.
 
+![Copy fail](https://raw.githubusercontent.com/Stormwind99/Pantography/master/other/screenshots/pantograph_fail.png)
+
+Example of an invalid attempt at a pantograph map transcription - one of the source filled maps is outside the area of the target map.
+
 ![Copy](https://raw.githubusercontent.com/Stormwind99/Pantography/master/other/screenshots/pantograph_copy.png)
 
 Example of a pantograph map copy.
@@ -54,7 +58,3 @@ Example of a pantograph map copy.
 ![Copy result](https://raw.githubusercontent.com/Stormwind99/Pantography/master/other/screenshots/pantograph_copy_result.png)
 
 The resulting filled map from the above pantograph map copy.
-
-![Copy fail](https://raw.githubusercontent.com/Stormwind99/Pantography/master/other/screenshots/pantograph_fail.png)
-
-Example of an invalid attempt at a pantograph map copy - one of the source filled maps is outside the area of the target map.
