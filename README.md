@@ -7,7 +7,7 @@ Two methods of use are available:
 
 1. Place two filled maps into a crafting grid
    * The first filled map will be the target map, and the second filled map the source map.  The maps can be different scales and different areas.
-   * The resulting filled map will be the target map with any data that fits into its area from the source map copied into any blank pixels of the target map - and the source map will be left in the crafting grid unchanged.
+   * The resulting filled map will be the target map with any data that fits into its area from the source map copied into any blank pixels of the target map - and the source map will be left in the crafting grid unchanged.  If the source map does not intersect with the target map, then no output map will appear in the crafting result slot.
 2. Build and use a pantograph.
    * Place source filled maps in the left crafting grid, and a target filled map in the target slot in middle.  If the source maps all intersect the target map, a result map will appear in the crafting result slot on the right.  Take the result map, and the target map will also clear.
    * Place source filled maps in the left crafting grid, and a target empty map in the target slot in middle.  In the crafting result slot on the right will appear a result filled map, which attempts to contain the data from all of the source filled maps (even scaling to higher scale levels if needed).
@@ -31,11 +31,11 @@ A lower scale source map has been copied into a higher scale destination map.  T
 
 ![Crafting grid recipe](https://raw.githubusercontent.com/Stormwind99/Pantography/master/other/screenshots/example-copy.png)
 
-Example of copying filled Map data from one Map (on the right) to the other Map (on the left)
+Example of copying filled map data from one Map (on the right) to the other map (on the left)
 
 ![Pantograph recipe](https://raw.githubusercontent.com/Stormwind99/Pantography/master/other/screenshots/pantograph_recipe.png)
 
-Pantograph recipe to build a pantograph.
+Pantograph recipe.
 
 ![Pantograph block](https://raw.githubusercontent.com/Stormwind99/Pantography/master/other/screenshots/pantograph_block.png)
 
