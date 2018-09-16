@@ -9,13 +9,13 @@ import com.wumple.pantography.Pantography;
 import com.wumple.pantography.Reference;
 import com.wumple.pantography.capability.container.ContainerPantograph;
 import com.wumple.pantography.capability.container.GuiHandlerPantograph;
+import com.wumple.pantography.integration.MapCompatibilityHandler;
 import com.wumple.util.capability.targetcrafting.TargetCraftingCap;
 import com.wumple.util.map.MapCreation;
 import com.wumple.util.map.MapTranscription;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -45,12 +45,12 @@ public class PantographCap extends TargetCraftingCap implements IPantographCap, 
 
     public boolean isValidInputStack(ItemStack itemStack)
     {
-        return itemStack.getItem() == Items.FILLED_MAP;
+        return MapCompatibilityHandler.getInstance().isItemMap(itemStack);
     }
 
     public boolean isValidBlankStack(ItemStack itemStack)
     {
-        return (itemStack.getItem() == Items.MAP);
+        return MapCompatibilityHandler.getInstance().isItemEmptyMap(itemStack);
     }
     
     public boolean isValidTargetStack(ItemStack itemStack)
@@ -124,7 +124,23 @@ public class PantographCap extends TargetCraftingCap implements IPantographCap, 
     {
         List<ItemStack> inputs = itemStacks.subList(0, INPUT_SLOTS);
 
-        return MapCreation.doCreate(worldIn, inputs);
+        MapCreation.MapProps mapProps = MapCreation.getCreateMap(worldIn, inputs);
+        
+        if (mapProps == null)
+        {
+            return null;
+        }
+
+        int worldX = mapProps.worldX;
+        int worldZ = mapProps.worldZ;
+        int scale = mapProps.scale;
+        
+        // was MapCreation.doCreate(worldIn, inputs);
+        
+        ItemStack newStack = MapCompatibilityHandler.getInstance().setupNewMap(worldIn, (double) worldX, (double) worldZ, (byte) scale, false, false);
+        MapTranscription.doTranscribe(worldIn, newStack, inputs);
+
+        return newStack;
     }
     
     @Nullable
