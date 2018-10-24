@@ -32,6 +32,6 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
     deobfCompile "com.wumple.wumpleutil:wumpleutil:2.12.6"
-    deobfProvided "com.wumple.megamap:megamap:1.0.6"
+    deobfProvided "com.wumple.megamap:megamap:1.0.7"
 }
 
