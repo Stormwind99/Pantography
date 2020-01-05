@@ -56,9 +56,9 @@ description="Copy Map item data to other Maps including different scale Maps."
     versionRange="[3.0,)"
     ordering="NONE"
     side="BOTH"
-[[dependencies.pantography]]
-    modId="megamap"
-    mandatory=false
-    versionRange="[2.0,)"
-    ordering="BEFORE"
-    side="BOTH"
+#[[dependencies.pantography]]
+#    modId="megamap"
+#    mandatory=false
+#    versionRange="[2.0,)"
+#    ordering="BEFORE"
+#    side="BOTH"

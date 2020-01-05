@@ -1,14 +1,9 @@
 package com.wumple.pantography.integration.megamap;
 
-import com.wumple.megamap.api.MegaMapAPI;
-import com.wumple.pantography.integration.IMapCompatibility;
-import com.wumple.pantography.integration.MapCompatibilityHandler;
-
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
-
-public class MapCompatibilityMegaMap implements IMapCompatibility
+public class MapCompatibilityMegaMap // PORT implements IMapCompatibility
 {
+	/*
+	// PORT
     public static void register()
     {
         MapCompatibilityHandler.setFactory(MapCompatibilityMegaMap::new);
@@ -31,5 +26,6 @@ public class MapCompatibilityMegaMap implements IMapCompatibility
     {
         return MegaMapAPI.getInstance().setupNewMap(worldIn, worldX, worldZ, scale, one, two);
     }
+    */
 
 }

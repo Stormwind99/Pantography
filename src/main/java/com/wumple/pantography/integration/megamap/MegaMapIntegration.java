@@ -7,7 +7,7 @@ public class MegaMapIntegration
     public static void register()
     {
         if (registered) { return; }
-        MapCompatibilityMegaMap.register();
+        // PORT MapCompatibilityMegaMap.register();
         registered = true;
     }
     

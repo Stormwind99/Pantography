@@ -16,7 +16,7 @@ public class MegaMapHandler
         if (ModList.get().isLoaded("megamap"))
         {
         	logger.info("Registering MegaMapIntegration");
-            MegaMapIntegration.register();
+            // PORT MegaMapIntegration.register();
         }
         else
         {

@@ -1,6 +1,6 @@
 package com.wumple.pantography.capability;
 
-import com.wumple.megamap.ConfigManager;
+import com.wumple.pantography.ConfigManager;
 import com.wumple.util.adapter.EntityThing;
 import com.wumple.util.adapter.ItemStackThing;
 import com.wumple.util.adapter.TileEntityThing;
