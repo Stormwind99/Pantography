@@ -1,0 +1,18 @@
+{
+  "_comment": [
+      "Transcribe a Filled Map to another Filled Map"
+   ],
+  "type": "pantography:transcribemap",
+  "group": "pantography",
+  "ingredients": [
+      {
+          "item": "minecraft:filled_map"
+      },
+      {
+          "item": "minecraft:filled_map"
+      }
+  ],
+  "result": {
+    "item": "minecraft:filled_map"
+  }
+}

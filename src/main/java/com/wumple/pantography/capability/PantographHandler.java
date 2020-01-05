@@ -1,7 +1,6 @@
 package com.wumple.pantography.capability;
 
-import com.wumple.pantography.config.ConfigHandler;
-import com.wumple.pantography.config.ModConfig;
+import com.wumple.megamap.ConfigManager;
 import com.wumple.util.adapter.EntityThing;
 import com.wumple.util.adapter.ItemStackThing;
 import com.wumple.util.adapter.TileEntityThing;
@@ -11,17 +10,18 @@ import com.wumple.util.capability.targetcrafting.IContainerCraftingOwner;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 @Mod.EventBusSubscriber
 public class PantographHandler extends CapHandler
@@ -41,17 +41,17 @@ public class PantographHandler extends CapHandler
     
     protected boolean isDebugging()
     {
-        return ModConfig.zdebugging.debug;
+        return ConfigManager.Debugging.debug.get();
     }
     
-    protected IPantographCap getCap(ICapabilityProvider provider)
+    protected LazyOptional<IPantographCap> getCap(ICapabilityProvider provider)
     {
         return IPantographCap.getCap(provider);
     }
 
     protected IContainerCraftingOwner getTCCap(ICapabilityProvider provider)
     {
-        return getCap(provider);
+        return null; // PORT getCap(provider);
     }
     
     /**
@@ -65,7 +65,7 @@ public class PantographHandler extends CapHandler
     {
         TileEntity entity = event.getObject();
 
-        if (ConfigHandler.pantographs.doesIt(entity))
+        if (false) // PORT (ConfigHandler.pantographs.doesIt(entity))
         {
             PantographCapProvider provider = PantographCapProvider.createProvider(new TileEntityThing(entity));
             event.addCapability(PantographCap.ID, provider);
@@ -77,7 +77,7 @@ public class PantographHandler extends CapHandler
     {
         Entity entity = event.getObject();
 
-        if (ConfigHandler.pantographs.doesIt(entity))
+        if (false) // PORT (ConfigHandler.pantographs.doesIt(entity))
         {
             PantographCapProvider provider = PantographCapProvider.createProvider(new EntityThing(entity));
             event.addCapability(PantographCap.ID, provider);
@@ -89,7 +89,7 @@ public class PantographHandler extends CapHandler
     {
         ItemStack stack = event.getObject();
 
-        if (ConfigHandler.pantographs.doesIt(stack))
+        if (false) // PORT (ConfigHandler.pantographs.doesIt(stack))
         {
             PantographCapProvider provider = PantographCapProvider.createProvider(new ItemStackThing(stack));
             event.addCapability(PantographCap.ID, provider);
@@ -108,7 +108,7 @@ public class PantographHandler extends CapHandler
         super.onBlockBreak(event);
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void onDrawOverlay(final RenderGameOverlayEvent.Text e)
     {

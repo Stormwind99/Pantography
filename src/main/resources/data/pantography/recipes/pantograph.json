@@ -1,0 +1,28 @@
+{
+  "_comment": [
+      "Device that copies maps at different scales"
+   ],
+  "type": "minecraft:crafting_shaped",
+  "conditions": [
+    {
+      "type": "forge:item_exists",
+      "item": "pantography:pantograph"
+    } 
+   ],
+	"group": "palimpsest",
+  "pattern": [
+    "xxx",
+    "xx ",
+    "yyy" ],
+  "key": {
+     "x": {
+        "tag": "forge:ingots"
+     },
+     "y": {
+        "tag": "minecraft:wooden_slabs"
+     }
+  },
+  "result": {
+    "item": "pantography:pantograph"
+  }
+}

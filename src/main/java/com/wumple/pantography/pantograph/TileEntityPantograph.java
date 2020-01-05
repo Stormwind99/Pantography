@@ -1,12 +1,20 @@
 package com.wumple.pantography.pantograph;
 
-import com.wumple.util.block.OrientableTileEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 
-public class TileEntityPantograph extends OrientableTileEntity
+public class TileEntityPantograph extends TileEntity // PORT extends OrientableTileEntity
 {
     /// CustomNamedTileEntity
 
-    @Override
+	// PORT
+    public TileEntityPantograph(TileEntityType<?> tileEntityTypeIn)
+	{
+		super(tileEntityTypeIn);
+		// TODO Auto-generated constructor stub
+	}
+
+	// PORT @Override
     public String getRealName()
     {
         return "container.pantography.pantograph";

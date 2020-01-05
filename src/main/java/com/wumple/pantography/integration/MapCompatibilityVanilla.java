@@ -2,7 +2,7 @@ package com.wumple.pantography.integration;
 
 import com.wumple.util.map.MapUtil;
 
-import net.minecraft.item.ItemMap;
+import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
@@ -14,9 +14,9 @@ public class MapCompatibilityVanilla implements IMapCompatibility
     }
     
     @Override
-    public boolean isItemMap(ItemStack itemstack1)
+    public boolean isItemFilledMap(ItemStack itemstack1)
     {
-        return MapUtil.isItemMap(itemstack1);
+        return MapUtil.isFilledMapItem(itemstack1);
     }
     
     @Override
@@ -26,9 +26,9 @@ public class MapCompatibilityVanilla implements IMapCompatibility
     }
     
     @Override
-    public ItemStack setupNewMap(World worldIn, double worldX, double worldZ, byte scale, boolean one, boolean two)
+    public ItemStack setupNewMap(World worldIn, int worldX, int worldZ, byte scale, boolean one, boolean two)
     {
-        return ItemMap.setupNewMap(worldIn, worldX, worldZ, scale, one, two);
+        return FilledMapItem.setupNewMap(worldIn, worldX, worldZ, scale, one, two);
     }
 
 }

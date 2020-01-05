@@ -5,17 +5,17 @@ import javax.annotation.Nullable;
 import com.wumple.util.adapter.IThing;
 import com.wumple.util.capability.targetcrafting.CapProvider;
 
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 
 public class PantographCapProvider extends CapProvider<IPantographCap>
 {
-    public PantographCapProvider(Capability<IPantographCap> capability, @Nullable EnumFacing facing, IThing ownerIn)
+    public PantographCapProvider(Capability<IPantographCap> capability, @Nullable Direction facing, IThing ownerIn)
     {
         super(capability, facing, ownerIn);
     }
 
-    public PantographCapProvider(Capability<IPantographCap> capability, @Nullable EnumFacing facing, IPantographCap instance,
+    public PantographCapProvider(Capability<IPantographCap> capability, @Nullable Direction facing, IPantographCap instance,
             IThing ownerIn)
     {
         super(capability, facing, instance, ownerIn);

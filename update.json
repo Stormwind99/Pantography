@@ -1,10 +1,15 @@
 {
   "homepage": "https://github.com/Stormwind99/Pantography",
   "promos": {
-    "1.12.2-latest": "2.0.0",
-    "1.12.2-recommended": "2.0.0",
+    "1.14.4-latest": "3.0.0",
+    "1.14.4-recommended": "3.0.0",
+    "1.12.2-latest": "2.0.2",
+    "1.12.2-recommended": "2.0.2",
     "1.7.10-latest": "1.0.1",
     "1.7.10-recommended": "1.0.1"
+  },
+  "1.14.4": {
+    "3.0.0": "Ported to 1.14.4"
   },
   "1.12.2": {
     "2.0.2": "MegaMap integration",

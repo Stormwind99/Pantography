@@ -4,36 +4,33 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import com.wumple.pantography.ObjectHolder;
-import com.wumple.pantography.Pantography;
 import com.wumple.pantography.Reference;
-import com.wumple.pantography.capability.container.ContainerPantograph;
 import com.wumple.pantography.capability.container.GuiHandlerPantograph;
 import com.wumple.pantography.integration.MapCompatibilityHandler;
 import com.wumple.util.capability.targetcrafting.TargetCraftingCap;
 import com.wumple.util.map.MapCreation;
 import com.wumple.util.map.MapTranscription;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IInteractionObject;
+// PORT import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
-public class PantographCap extends TargetCraftingCap implements IPantographCap, IInteractionObject
+public class PantographCap extends TargetCraftingCap implements IPantographCap  // PORT , IInteractionObject
 {
     // The {@link Capability} instance
     @CapabilityInject(IPantographCap.class)
     public static final Capability<IPantographCap> CAPABILITY = null;
-    public static final EnumFacing DEFAULT_FACING = null;
+    public static final Direction DEFAULT_FACING = null;
 
     // IDs of the capability
     public static final ResourceLocation ID = new ResourceLocation(Reference.MOD_ID, "pantograph");
@@ -45,7 +42,7 @@ public class PantographCap extends TargetCraftingCap implements IPantographCap, 
 
     public boolean isValidInputStack(ItemStack itemStack)
     {
-        return MapCompatibilityHandler.getInstance().isItemMap(itemStack);
+        return MapCompatibilityHandler.getInstance().isItemFilledMap(itemStack);
     }
 
     public boolean isValidBlankStack(ItemStack itemStack)
@@ -58,9 +55,9 @@ public class PantographCap extends TargetCraftingCap implements IPantographCap, 
         return (isValidInputStack(itemStack) || isValidBlankStack(itemStack));
     }
 
-    public void openGui(EntityPlayer playerIn, World worldIn, BlockPos pos)
+    public void openGui(PlayerEntity playerIn, World worldIn, BlockPos pos)
     {
-        playerIn.openGui(Pantography.instance, GuiHandlerPantograph.myGuiID, worldIn, pos.getX(), pos.getY(), pos.getZ());
+        // PORT playerIn.openGui(Pantography.instance, GuiHandlerPantograph.myGuiID, worldIn, pos.getX(), pos.getY(), pos.getZ());
     }
     
     public String getLocalizationID()
@@ -70,15 +67,17 @@ public class PantographCap extends TargetCraftingCap implements IPantographCap, 
 
     public SoundEvent getCraftingSound()
     {
-        return ObjectHolder.pantograph_use;
+        // PORT return ObjectHolder.pantograph_use;
+        return null;
     }
 
     // ----------------------------------------------------------------------
     /// IInteractionObject
 
-    public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn)
+    public Container createContainer(PlayerInventory playerInventory, PlayerEntity playerIn)
     {
-        return new ContainerPantograph(playerInventory, this);
+        // PORT return new ContainerPantograph(playerInventory, this);
+    	return null;
     }
 
     public String getGuiID()
@@ -137,7 +136,7 @@ public class PantographCap extends TargetCraftingCap implements IPantographCap, 
         
         // was MapCreation.doCreate(worldIn, inputs);
         
-        ItemStack newStack = MapCompatibilityHandler.getInstance().setupNewMap(worldIn, (double) worldX, (double) worldZ, (byte) scale, false, false);
+        ItemStack newStack = MapCompatibilityHandler.getInstance().setupNewMap(worldIn, worldX, worldZ, (byte) scale, false, false);
         MapTranscription.doTranscribe(worldIn, newStack, inputs);
 
         return newStack;
@@ -157,4 +156,12 @@ public class PantographCap extends TargetCraftingCap implements IPantographCap, 
         
         return null;
     }
+
+    // PORT
+	@Override
+	public Container createMenu(int p_createMenu_1_, PlayerInventory p_createMenu_2_, PlayerEntity p_createMenu_3_)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

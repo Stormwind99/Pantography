@@ -1,0 +1,26 @@
+{
+  "_comment": [
+      "Transcribe a Filled Map to another Filled Map"
+   ],
+  "type": "pantography:transcribemap",
+  "conditions": [
+    {
+      "type": "forge:item_exists",
+      "item": "megamap:megamap_filled"
+    } 
+   ],
+	"group": "palimpsest",
+  "pattern": [
+  "group": "pantography",
+  "ingredients": [
+      {
+          "item": "megamap:megamap_filled"
+      },
+      {
+          "item": "megamap:megamap_filled"
+      }
+  ],
+  "result": {
+    "item": "megamap:megamap_filled"
+  }
+}

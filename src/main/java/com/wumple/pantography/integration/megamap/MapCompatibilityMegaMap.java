@@ -15,7 +15,7 @@ public class MapCompatibilityMegaMap implements IMapCompatibility
     }
     
     @Override
-    public boolean isItemMap(ItemStack itemstack1)
+    public boolean isItemFilledMap(ItemStack itemstack1)
     {
         return MegaMapAPI.getInstance().isFilledMap(itemstack1);
     }
@@ -27,7 +27,7 @@ public class MapCompatibilityMegaMap implements IMapCompatibility
     }
     
     @Override
-    public ItemStack setupNewMap(World worldIn, double worldX, double worldZ, byte scale, boolean one, boolean two)
+    public ItemStack setupNewMap(World worldIn, int worldX, int worldZ, byte scale, boolean one, boolean two)
     {
         return MegaMapAPI.getInstance().setupNewMap(worldIn, worldX, worldZ, scale, one, two);
     }

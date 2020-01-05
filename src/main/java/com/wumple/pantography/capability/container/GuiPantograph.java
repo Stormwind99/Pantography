@@ -1,18 +1,19 @@
 package com.wumple.pantography.capability.container;
 
 import com.wumple.pantography.capability.IPantographCap;
-import com.wumple.util.capability.targetcrafting.container.GuiCrafting;
 
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.client.gui.screen.inventory.CraftingScreen;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 
-public class GuiPantograph extends GuiCrafting
+public class GuiPantograph extends CraftingScreen
 {
     protected static final ResourceLocation guiTextures = new ResourceLocation("pantography", "textures/gui/pantograph.png");
 
-    public GuiPantograph (InventoryPlayer inventory, IPantographCap ownerIn)
+    public GuiPantograph (PlayerInventory inventory, IPantographCap ownerIn)
     {
-        super(inventory, ownerIn);
+    	// PORT public CraftingScreen(WorkbenchContainer screenContainer, PlayerInventory inv, ITextComponent titleIn) {
+        super(null, inventory, null);
     }
     
     protected ResourceLocation getGuiTextures()
