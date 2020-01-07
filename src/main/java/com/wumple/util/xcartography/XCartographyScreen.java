@@ -7,7 +7,6 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.FilledMapItem;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -54,14 +53,14 @@ public class XCartographyScreen extends ContainerScreen<XCartographyContainer>
 		int i = this.guiLeft;
 		int j = this.guiTop;
 		this.blit(i, j, 0, 0, this.xSize, this.ySize);
-		Item item = this.container.getSlot(1).getStack().getItem();
-		boolean flag = container.isCopyInput(item);
-		boolean flag1 = container.isScalingInput(item);
-		boolean flag2 = container.isLockingInput(item);
+		ItemStack itemstack1 = this.container.getSlot(1).getStack();
+		boolean flag = container.isCopyInput(itemstack1);
+		boolean flag1 = container.isScalingInput(itemstack1);
+		boolean flag2 = container.isLockingInput(itemstack1);
 		ItemStack itemstack = this.container.getSlot(0).getStack();
 		boolean flag3 = false;
 		MapData mapdata;
-		if (container.isAllowedInSlot0In(itemstack.getItem()))
+		if (container.isAllowedInSlot0In(itemstack))
 		{
 			mapdata = FilledMapItem.getData(itemstack, this.minecraft.world);
 			if (mapdata != null)
