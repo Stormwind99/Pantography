@@ -4,9 +4,8 @@ import com.wumple.pantography.ConfigManager;
 import com.wumple.pantography.Pantography;
 import com.wumple.util.crafting.CraftingUtil;
 import com.wumple.util.crafting.ShapelessRecipe;
-import com.wumple.util.map.MapCreation;
 import com.wumple.util.map.MapTranscription;
-import com.wumple.util.map.MapUtil;
+import com.wumple.util.xmap.XMapAPI;
 
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.IInventory;
@@ -56,7 +55,7 @@ public class TranscribeMapRecipe extends ShapelessRecipe
 			if (!itemstack1.isEmpty())
 			{
 				//if (MapCompatibilityHandler.getInstance().isItemFilledMap(itemstack1))
-				if (MapUtil.isFilledMapItem(itemstack1))
+				if (XMapAPI.getInstance().isFilledMap(itemstack1))
 				{
 					if (destItemStack.isEmpty())
 					{
@@ -114,7 +113,7 @@ public class TranscribeMapRecipe extends ShapelessRecipe
 
 		if (results != null && !results.srcItemStack().isEmpty() && !results.destItemStack().isEmpty())
 		{
-			return MapCreation.copyMap(results.destItemStack());
+			return XMapAPI.getInstance().copyMap(results.destItemStack(), 1);
 		}
 		else
 		{
