@@ -74,30 +74,7 @@ public class PantographBlock extends Block // PORT extends HorizontalOrientableB
 		return new PantographTileEntity();
 	}
 
-	// ------------------------------------------------------------------------
-	// from CartographyTableBlock
-
-	/*
-	private static final TranslationTextComponent title = new TranslationTextComponent("container.cartography_table");
-	
-	public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn,
-			BlockRayTraceResult hit)
-	{
-		player.openContainer(state.getContainer(worldIn, pos));
-		//player.addStat(Stats.INTERACT_WITH_CARTOGRAPHY_TABLE);
-		return true;
-	}
-	
-	@Nullable
-	public INamedContainerProvider getContainer(BlockState state, World worldIn, BlockPos pos)
-	{
-		return new SimpleNamedContainerProvider((p_220267_2_, p_220267_3_, p_220267_4_) -> {
-			return new PantographContainer(p_220267_2_, p_220267_3_, IWorldPosCallable.of(worldIn, pos));
-		}, title);
-	}
-	*/
-
-	// tut
+	// From McJty tutorial
 
 	@Override
 	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand,

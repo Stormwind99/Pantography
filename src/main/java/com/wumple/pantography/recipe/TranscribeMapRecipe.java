@@ -9,12 +9,14 @@ import com.wumple.util.xmap.XMapAPI;
 
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraft.world.storage.MapData;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent.ItemCraftedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -54,7 +56,6 @@ public class TranscribeMapRecipe extends ShapelessRecipe
 
 			if (!itemstack1.isEmpty())
 			{
-				//if (MapCompatibilityHandler.getInstance().isItemFilledMap(itemstack1))
 				if (XMapAPI.getInstance().isFilledMap(itemstack1))
 				{
 					if (destItemStack.isEmpty())
@@ -113,7 +114,7 @@ public class TranscribeMapRecipe extends ShapelessRecipe
 
 		if (results != null && !results.srcItemStack().isEmpty() && !results.destItemStack().isEmpty())
 		{
-			return XMapAPI.getInstance().copyMap(results.destItemStack(), 1);
+			return XMapAPI.getInstance().copyMapShallow(results.destItemStack(), 1);
 		}
 		else
 		{
@@ -184,8 +185,11 @@ public class TranscribeMapRecipe extends ShapelessRecipe
 			// only transcribe on server, and let it send updated map data to client
 			if (!event.getPlayer().getEntityWorld().isRemote())
 			{
-				MapTranscription.transcribeMap(event.getCrafting(), results.srcItemStack(),
-						event.getEntityPlayer().getEntityWorld());
+				// New Item: event.getCrafting()
+				// Map to copy from: results.srcItemStack()
+				// Original map being copied to: results.destItemStack()
+				
+				MapTranscription.transcribeMapWithCopy(event.getCrafting(), results.destItemStack(), results.srcItemStack(), event.getPlayer().getEntityWorld());
 			}
 			
 			CraftingUtil.growByOne(craftMatrix, results.srcItemStack());
