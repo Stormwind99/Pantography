@@ -2,6 +2,9 @@
     "pantography.pantograph.": "Pantograph",
     "container.pantography.pantograph": "Pantograph",
     "block.pantography.pantograph": "Pantograph",
+    "item.pantography.pantograph": "Pantograph",
 
-    "pantography.subtitle.pantograph_use": "Trace"
+    "pantography.subtitle.pantograph_use": "Trace",
+
+    "itemGroup.pantography": "Pantography"
 }
