@@ -9,6 +9,7 @@
     "1.7.10-recommended": "1.0.1"
   },
   "1.14.4": {
+    "3.0.7": "Fix rendering pantograph next to another block",
     "3.0.6": "Fix to Forge MDK build.gradle thanks to LexManos",
     "3.0.5": "Attempted fix for container crash via Curseforge launcher",
     "3.0.4": "Attempted fix for container crash via Curseforge launcher",
