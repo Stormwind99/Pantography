@@ -27,9 +27,10 @@ public class PantographScreen extends XCartographyScreen
 	{
 		boolean drew = false;
 		
-		PantographContainer pcontainer = Util.as(this.container, PantographContainer.class);
-		if (pcontainer != null)
+		if (this.container instanceof PantographContainer)
 		{
+			PantographContainer pcontainer = (PantographContainer)this.container;
+
 			ItemStack itemstack1 = pcontainer.getSlot(1).getStack();
 			boolean isTranscribing = pcontainer.isTranscribingInput(itemstack1);
 			if (isTranscribing)
