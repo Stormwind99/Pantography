@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -55,6 +56,19 @@ public class PantographBlock extends Block // PORT extends HorizontalOrientableB
 	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
 	{
 		builder.add(BlockStateProperties.HORIZONTAL_FACING);
+	}
+
+	// for partial block
+
+	/**
+	 * Gets the render layer this block will render on. SOLID for solid blocks,
+	 * CUTOUT or CUTOUT_MIPPED for on-off transparency (glass, reeds), TRANSLUCENT
+	 * for fully blended transparency (stained glass)
+	 */
+	@Override
+	public BlockRenderLayer getRenderLayer()
+	{
+		return BlockRenderLayer.CUTOUT;
 	}
 
 	// ------------------------------------------------------------------------
