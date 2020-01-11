@@ -31,27 +31,4 @@ public class PantographTileEntity extends TileEntity implements INamedContainerP
 	{
 		return new PantographContainer(i, world, pos, playerInventory, playerEntity);
 	}
-
-	/*
-	// PORT
-	  
-	@Override
-	public Container createMenu(int i, PlayerInventory playerInventory, PlayerEntity playerEntity)
-    {
-        IPantographCap cap = getCap(world, x, y, z).orElse(null); // PORT
-        // PORT return (cap != null) ? new ContainerPantograph(player.inventory, cap) : null;
-        return null;
-    }
-	
-	/// CustomNamedTileEntity
-	
-	// PORT 
-	@Override
-	public String getRealName()
-	{
-	    return "container.pantography.pantograph";
-	}
-	*/
-	
-	
 }

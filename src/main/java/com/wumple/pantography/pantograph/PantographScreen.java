@@ -80,11 +80,11 @@ public class PantographScreen extends XCartographyScreen
 			int boundsHeight = 132;
 			int rectWidth = 50;
 			int rectHeight = 66;
-			// TODO GuiUtils.drawInscribedRect(x, y, boundsWidth, boundsHeight, rectWidth, rectHeight);
 			// TODO McJty said blit() and fill(), for unfilled maybe vLine() and hLine()
 		}
 		else
 		{
+			// draw X over arrow since no intersection to transcribe
 			this.blit(i + 35, j + 31, this.xSize + 50, 132, 28, 21);
 		}
 		*/

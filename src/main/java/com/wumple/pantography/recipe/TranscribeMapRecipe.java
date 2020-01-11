@@ -122,23 +122,6 @@ public class TranscribeMapRecipe extends ShapelessRecipe
 		}
 	}
 
-	/*
-	@Override
-	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
-	{
-		NonNullList<ItemStack> nonnulllist = NonNullList.<ItemStack>withSize(inv.getSizeInventory(), ItemStack.EMPTY);
-	
-		// return all unused items
-		for (int i = 0; i < nonnulllist.size(); ++i)
-		{
-			ItemStack itemstack = inv.getStackInSlot(i);
-			nonnulllist.set(i, net.minecraftforge.common.ForgeHooks.getContainerItem(itemstack));
-		}
-	
-		return nonnulllist;
-	}
-	*/
-
 	/**
 	 * Used to determine if this recipe can fit in a grid of the given width/height
 	 */
