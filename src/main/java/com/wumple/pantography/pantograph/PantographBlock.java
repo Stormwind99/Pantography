@@ -1,6 +1,14 @@
 package com.wumple.pantography.pantograph;
 
+import java.util.Optional;
+import java.util.stream.Stream;
+
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import org.apache.commons.lang3.EnumUtils;
+
+import com.wumple.util.misc.VoxelShapeUtils;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -16,14 +24,21 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.IBooleanFunction;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 public class PantographBlock extends Block // PORT extends HorizontalOrientableBlock
 {
+	protected VoxelShape shape;
+
 	// ----------------------------------------------------------------------
 	// BlockPantograph
 
@@ -33,8 +48,11 @@ public class PantographBlock extends Block // PORT extends HorizontalOrientableB
 	{
 		super(Block.Properties.create(Material.WOOD).hardnessAndResistance(1.5f).tickRandomly());
 
+		buildVoxelShapes();
+
 		setRegistryName(ID);
 	}
+
 
 	// ------------------------------------------------------------------------
 	// for horizontal orientable block
@@ -60,16 +78,52 @@ public class PantographBlock extends Block // PORT extends HorizontalOrientableB
 
 	// for partial block
 
-	/**
-	 * Gets the render layer this block will render on. SOLID for solid blocks,
-	 * CUTOUT or CUTOUT_MIPPED for on-off transparency (glass, reeds), TRANSLUCENT
-	 * for fully blended transparency (stained glass)
-	 */
-	@Override
-	public BlockRenderLayer getRenderLayer()
+	protected VoxelShape buildShape()
 	{
-		return BlockRenderLayer.CUTOUT;
+		Optional<VoxelShape> a = Stream.of(Block.makeCuboidShape(1, 2, 8, 2, 3, 9), Block.makeCuboidShape(1, 2, 2, 2, 3, 3),
+				Block.makeCuboidShape(8, 2, 9, 9, 3, 10), Block.makeCuboidShape(8, 2, 1, 9, 3, 2),
+				Block.makeCuboidShape(3, 2, 8, 10, 3, 9), Block.makeCuboidShape(8, 2, 3, 9, 3, 8),
+				Block.makeCuboidShape(2, 2, 1, 3, 3, 15), Block.makeCuboidShape(3, 2, 2, 15, 3, 3))
+				.reduce((v1, v2) -> {
+					return VoxelShapes.combineAndSimplify(v1, v2, IBooleanFunction.OR);
+				});
+		Optional<VoxelShape> b = Stream.of(Block.makeCuboidShape(8, 1, 8, 9, 2, 9), Block.makeCuboidShape(13, 1, 2, 14, 2, 3),
+				Block.makeCuboidShape(2, 1, 2, 3, 2, 3), Block.makeCuboidShape(2, 1, 13, 3, 2, 14))
+				.reduce((v1, v2) -> {
+					return VoxelShapes.combineAndSimplify(v1, v2, IBooleanFunction.OR);
+				});
+		
+		// exported from Blockbench via Mod Utils plugins
+		Optional<VoxelShape> object = Stream.of(
+				Block.makeCuboidShape(0, 0, 0, 16, 1, 16),
+				a.get(),
+				b.get())
+				.reduce((v1, v2) -> {
+					return VoxelShapes.combineAndSimplify(v1, v2, IBooleanFunction.OR);
+				});
+
+		return object.get();		
 	}
+	
+	public static final Direction[] HORIZONTAL_DIRECTIONS = new Direction[]{Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST};
+	
+	private static final VoxelShape[] bounds = new VoxelShape[HORIZONTAL_DIRECTIONS.length];
+	
+	protected void buildVoxelShapes()
+	{
+        VoxelShape pump = VoxelShapeUtils.rotate(buildShape(), Rotation.CLOCKWISE_180);
+        for (Direction side : HORIZONTAL_DIRECTIONS) {
+            bounds[side.ordinal() - 2] = VoxelShapeUtils.rotateHorizontal(pump, side);
+        }
+	}
+	
+    @Nonnull
+    @Override
+    @Deprecated
+    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
+    	int index = state.get(BlockStateProperties.HORIZONTAL_FACING).ordinal();
+        return bounds[index - 2];
+    }
 
 	// ------------------------------------------------------------------------
 	// for tile entity - may not be needed in 1.14
