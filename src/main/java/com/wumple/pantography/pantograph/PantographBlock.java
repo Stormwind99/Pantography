@@ -77,6 +77,9 @@ public class PantographBlock extends Block // PORT extends HorizontalOrientableB
 
 	protected VoxelShape buildShape()
 	{
+		// exported by loading model into Blockbench then using Mod Utils plugins
+		// followed by manual fix-up
+		
 		Optional<VoxelShape> a = Stream.of(Block.makeCuboidShape(1, 2, 8, 2, 3, 9), Block.makeCuboidShape(1, 2, 2, 2, 3, 3),
 				Block.makeCuboidShape(8, 2, 9, 9, 3, 10), Block.makeCuboidShape(8, 2, 1, 9, 3, 2),
 				Block.makeCuboidShape(3, 2, 8, 10, 3, 9), Block.makeCuboidShape(8, 2, 3, 9, 3, 8),
@@ -90,7 +93,6 @@ public class PantographBlock extends Block // PORT extends HorizontalOrientableB
 					return VoxelShapes.combineAndSimplify(v1, v2, IBooleanFunction.OR);
 				});
 		
-		// exported from Blockbench via Mod Utils plugins
 		Optional<VoxelShape> object = Stream.of(
 				Block.makeCuboidShape(0, 0, 0, 16, 1, 16),
 				a.get(),
@@ -102,8 +104,8 @@ public class PantographBlock extends Block // PORT extends HorizontalOrientableB
 		return object.get();		
 	}
 	
+	// From Mekanism https://github.com/mekanism/Mekanism/tree/1.15x/src/main/java/mekanism/common
 	public static final Direction[] HORIZONTAL_DIRECTIONS = new Direction[]{Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST};
-	
 	private static final VoxelShape[] bounds = new VoxelShape[HORIZONTAL_DIRECTIONS.length];
 	
 	protected void buildVoxelShapes()
