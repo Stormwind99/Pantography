@@ -6,8 +6,6 @@ import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.apache.commons.lang3.EnumUtils;
-
 import com.wumple.util.misc.VoxelShapeUtils;
 
 import net.minecraft.block.Block;
@@ -21,7 +19,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Rotation;
