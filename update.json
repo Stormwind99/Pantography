@@ -1,14 +1,15 @@
 {
   "homepage": "https://github.com/Stormwind99/Pantography",
   "promos": {
-    "1.14.4-latest": "3.0.6",
-    "1.14.4-recommended": "3.0.6",
+    "1.14.4-latest": "3.0.8",
+    "1.14.4-recommended": "3.0.8",
     "1.12.2-latest": "2.0.2",
     "1.12.2-recommended": "2.0.2",
     "1.7.10-latest": "1.0.1",
     "1.7.10-recommended": "1.0.1"
   },
   "1.14.4": {
+    "3.0.8": "Switched to VoxelShapes rendering to fix rendering pantograph next to another block",
     "3.0.7": "Fix rendering pantograph next to another block",
     "3.0.6": "Fix to Forge MDK build.gradle thanks to LexManos",
     "3.0.5": "Attempted fix for container crash via Curseforge launcher",
