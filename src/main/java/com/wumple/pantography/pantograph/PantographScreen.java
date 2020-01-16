@@ -3,13 +3,11 @@ package com.wumple.pantography.pantograph;
 import javax.annotation.Nullable;
 
 import com.mojang.blaze3d.platform.GlStateManager;
-import com.wumple.util.base.misc.Util;
 import com.wumple.util.xcartography.XCartographyContainer;
 import com.wumple.util.xcartography.XCartographyScreen;
 import com.wumple.util.xmap.XMapAPI;
 
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.storage.MapData;
@@ -26,11 +24,12 @@ public class PantographScreen extends XCartographyScreen
 			boolean isLocked)
 	{
 		boolean drew = false;
-		
-		if (this.container instanceof PantographContainer)
-		{
-			PantographContainer pcontainer = (PantographContainer)this.container;
 
+		XCartographyContainer xcontainer = getContainer();
+		
+		if (xcontainer instanceof PantographContainer)
+		{
+			PantographContainer pcontainer = (PantographContainer)xcontainer;
 			ItemStack itemstack1 = pcontainer.getSlot(1).getStack();
 			boolean isTranscribing = pcontainer.isTranscribingInput(itemstack1);
 			if (isTranscribing)
