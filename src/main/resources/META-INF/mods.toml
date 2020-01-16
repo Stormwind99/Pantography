@@ -50,7 +50,7 @@ description="${mod_description}"
     versionRange="[${config.mc_version}]"
     ordering="NONE"
     side="BOTH"
-[[dependencies.pantography]]
+[[dependencies.${mod_id}]]
     modId="wumpleutil"
     mandatory=true
     versionRange="[3.0,)"

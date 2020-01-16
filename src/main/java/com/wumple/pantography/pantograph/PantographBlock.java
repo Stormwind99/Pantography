@@ -34,8 +34,6 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 public class PantographBlock extends Block // PORT extends HorizontalOrientableBlock
 {
-	protected VoxelShape shape;
-
 	// ----------------------------------------------------------------------
 	// BlockPantograph
 
@@ -49,7 +47,6 @@ public class PantographBlock extends Block // PORT extends HorizontalOrientableB
 
 		setRegistryName(ID);
 	}
-
 
 	// ------------------------------------------------------------------------
 	// for horizontal orientable block
@@ -77,7 +74,7 @@ public class PantographBlock extends Block // PORT extends HorizontalOrientableB
 
 	protected VoxelShape buildShape()
 	{
-		// exported by loading model into Blockbench then using Mod Utils plugins
+		// exported by loading model into Blockbench then using Mod Utils plugins to export VoxelShape
 		// followed by manual fix-up
 		
 		Optional<VoxelShape> a = Stream.of(Block.makeCuboidShape(1, 2, 8, 2, 3, 9), Block.makeCuboidShape(1, 2, 2, 2, 3, 3),
