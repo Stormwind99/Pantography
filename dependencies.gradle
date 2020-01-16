@@ -26,7 +26,9 @@ dependencies {
     // Real examples
     // compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
     // compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
-    compile fg.deobf('com.wumple.util:wumpleutil:3.0.4')
+    compile fg.deobf('com.wumple.util:wumpleutil:3.1.0') {
+        transitive = false;
+    }
     //compile fg.deobf('com.wumple.megamap:megamap:2.0.0')
 
     // The 'provided' configuration is for optional dependencies that exist at compile-time but might not at runtime.
