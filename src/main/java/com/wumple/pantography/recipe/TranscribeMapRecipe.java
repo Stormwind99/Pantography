@@ -3,20 +3,18 @@ package com.wumple.pantography.recipe;
 import com.wumple.pantography.ConfigManager;
 import com.wumple.pantography.Pantography;
 import com.wumple.util.crafting.CraftingUtil;
-import com.wumple.util.crafting.ShapelessRecipe;
+import com.wumple.util.crafting.XShapelessRecipe;
 import com.wumple.util.map.MapTranscription;
 import com.wumple.util.xmap.XMapAPI;
 
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.MapData;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent.ItemCraftedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -24,7 +22,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 /**
  * Recipe to copy map data from one filled map into another filled map
  */
-public class TranscribeMapRecipe extends ShapelessRecipe
+public class TranscribeMapRecipe extends XShapelessRecipe
 {
 	public TranscribeMapRecipe(ResourceLocation idIn, String groupIn, ItemStack recipeOutputIn,
 			NonNullList<Ingredient> recipeItemsIn)
